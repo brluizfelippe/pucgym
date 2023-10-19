@@ -1,0 +1,7 @@
+{
+  "name": "pucgym",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
