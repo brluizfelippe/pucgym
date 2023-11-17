@@ -1,0 +1,155 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/landing/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Vídeos</ion-title>
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.videoInfoStore.loading"
+    ></ion-spinner>
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="8" *ngIf="!this.videoInfoStore.loading">
+        <form #f="ngForm">
+          <ion-item *ngIf="!this.videoInfoStore.videos.length">
+            <ion-label>Nenhum vídeo cadastrado</ion-label>
+          </ion-item>
+          <ion-card
+            *ngFor="let video of this.videoInfoStore.videos; let i = index"
+          >
+            <ion-item id="cardTitle"
+              ><ion-icon name="videocam-outline" slot="start"></ion-icon
+              >{{video.originalname|titlecase}}</ion-item
+            >
+
+            <ion-item>
+              <ion-label>
+                <p>Nome: {{video.originalname}}</p>
+                <p>Tipo: {{video.mimetype}}</p>
+                <p>Tamanho: {{video.convertVideoSizeToMB() | number}} MB</p>
+                <p>Data: {{video.date | date}}</p>
+                <p *ngIf="editItem && i===selectedIndex">
+                  <video
+                    width="100%"
+                    height="500px"
+                    controls
+                    controlsList="nodownload"
+                  >
+                    <source [src]="video.location" [type]="video.mimetype" />
+                  </video>
+                </p>
+                <p>
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="danger"
+                    (click)="onDelete(video)"
+                    *ngIf="editItem && i===selectedIndex"
+                  >
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onReturn()"
+                    *ngIf="editItem && i===selectedIndex"
+                  >
+                    <ion-icon name="eye-off-outline"></ion-icon>
+                  </ion-button>
+                </p>
+              </ion-label>
+
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onEdit(i)"
+                *ngIf="!(i===selectedIndex)"
+              >
+                <ion-icon name="eye-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+          <ion-card>
+            <div *ngIf="newItem">
+              <ion-item>
+                <div id="arquivoSelecionado" slot="start"></div>
+                <input
+                  type="file"
+                  (change)="onFileChange($event)"
+                  name="file"
+                  accept="video/mp4, video/webm"
+                  style="display: none"
+                  id="arquivo" />
+                <ion-button
+                  slot="end"
+                  (click)="onSelecionaArquivo()"
+                  color="light"
+                  fill="clear"
+                  size="small"
+                  shape="round"
+                  strong="true"
+                  ><ion-icon name="cloud-upload-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onCreateFile()"
+                  [disabled]="!isEnable"
+                >
+                  <ion-icon name="checkmark-done-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onReturn()"
+                >
+                  <ion-icon name="close-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+            <div *ngIf="!newItem">
+              <ion-item lines="none"
+                ><ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onNew()"
+                >
+                  <ion-icon name="add-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

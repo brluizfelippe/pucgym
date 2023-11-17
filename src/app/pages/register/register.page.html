@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-padding-horizontal">
+      <ion-col size="12" size-lg="4" class="colContent">
+        <ion-card
+          ><ion-card-header
+            ><ion-img [src]="logoUrl"></ion-img
+          ></ion-card-header>
+
+          <form #f="ngForm" (ngSubmit)="onSubmit()">
+            <ion-item>
+              <ion-label position="stacked">Nome</ion-label>
+              <ion-input
+                type="text"
+                [(ngModel)]="userInfoStore.userSelected.firstName"
+                name="firstName"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Sobrenome</ion-label>
+              <ion-input
+                type="text"
+                [(ngModel)]="userInfoStore.userSelected.lastName"
+                name="lastName"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Email</ion-label>
+              <ion-input
+                type="email"
+                [(ngModel)]="userInfoStore.userSelected.email"
+                name="email"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Senha</ion-label>
+              <ion-input
+                type="password"
+                [(ngModel)]="userInfoStore.userSelected.password"
+                name="email"
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-button
+              color="dark"
+              type="submit"
+              [disabled]="!f.valid"
+              ion-button
+              Expand="full"
+              fill="solid"
+              size="small"
+              shape="round"
+              strong="true"
+            >
+              Registrar com email
+            </ion-button>
+
+            <ion-button
+              color="danger"
+              type="button"
+              (click)="googleSignup()"
+              Expand="full"
+              fill="solid"
+              size="small"
+              shape="round"
+              strong="true"
+              ><ion-icon name="logo-google" slot="start"></ion-icon>
+              Registrar com google
+            </ion-button>
+          </form>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

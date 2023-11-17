@@ -1,0 +1,255 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Meu Programa</ion-title>
+
+    <!-- Loading Spinner -->
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="programInfoStore.loading"
+    ></ion-spinner>
+
+    <!-- User Information Chip -->
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngIf=" !authInfoStore.isClient"
+      ><ion-col size="12" class="colContent">
+        <ion-item lines="none">
+          <ion-label
+            >Você não é um atleta cadastrado. Consulte o
+            administrador.</ion-label
+          >
+        </ion-item></ion-col
+      ></ion-row
+    >
+    <ng-container *ngIf="authInfoStore.isAdmin || authInfoStore.isClient">
+      <ion-row *ngIf="!showTraining ">
+        <ion-col *ngIf="!programInfoStore.loading" size="12" class="colContent">
+          <!-- No Training Message -->
+          <ion-item *ngIf="!programInfoStore.programs">
+            <ion-label
+              >Não existem treinos definidos no seu programa!</ion-label
+            >
+          </ion-item>
+
+          <!-- Training Selection -->
+          <ion-card>
+            <ion-item id="cardTitle" lines="none">
+              <ion-icon name="pulse-outline" slot="start"></ion-icon>
+              <ion-select
+                class="select"
+                label="Meus treinos"
+                label-placement="stacked"
+                (ionChange)="onTrainingSelected($event)"
+                name="training"
+                placeholder="Selecionar treino"
+                required
+              >
+                <ion-select-option
+                  class="itemSelect"
+                  *ngFor="let training of programInfoStore.programs[0].trainings"
+                  [value]="training"
+                >
+                  {{ training.name | titlecase }}
+                </ion-select-option> </ion-select
+              ><ion-spinner
+                slot="end"
+                name="dots"
+                *ngIf="this.trainingInfoStore.loading"
+              ></ion-spinner>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <!-- Exercise Details -->
+      <ng-container *ngIf="showTraining && !trainingComplete">
+        <ion-row>
+          <ion-col size="12">
+            <ion-card
+              ><!-- Exercise Selection -->
+              <ion-item id="cardTitle" lines="none"
+                ><ion-icon name="fitness-outline" slot="start"></ion-icon>
+                <ion-select
+                  label="Meus exercícios"
+                  label-placement="stacked"
+                  placeholder="Selecione exercício"
+                  (ionChange)="onExerciseSelected($event)"
+                  name="exercise"
+                  required
+                >
+                  <ion-select-option
+                    *ngFor="let exercise of trainingInfoStore.trainings[0]?.exercises"
+                    [value]="exercise"
+                  >
+                    {{ exercise.name | titlecase }}
+                  </ion-select-option>
+                </ion-select>
+                <ion-button
+                  *ngIf="showExercise && setupInfoStore.setups.length"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  float="right"
+                  (click)="onConfirmFinishExercise();"
+                  ><ion-icon name="checkmark-done-outline"></ion-icon
+                ></ion-button>
+                <ion-button
+                  *ngIf="showExercise"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  float="right"
+                  (click)="resetStates();"
+                  ><ion-icon name="pulse-outline"></ion-icon></ion-button
+                ><ion-spinner
+                  slot="end"
+                  name="dots"
+                  *ngIf="this.setupInfoStore.loading"
+                ></ion-spinner></ion-item
+              ><ng-container
+                *ngIf="exerciseInfoStore.exercises.length && showExercise"
+              >
+                <form #f="ngForm">
+                  <ion-row class="ion-align-items-start">
+                    <ion-col size="12" size-sm="3" class="detail">
+                      <p>
+                        Grupo muscular: {{
+                        exerciseInfoStore.exercises[0].muscle.name | titlecase
+                        }}
+                      </p>
+                      <ng-container
+                        *ngFor="let equipment of exerciseInfoStore.exercises[0]?.equipments; let equipmentIndex = index"
+                        ><p>
+                          Aparelho {{ equipmentIndex + 1 }} : {{ equipment.name
+                          | titlecase }}
+                        </p>
+                        <p>
+                          <ion-img
+                            alt="Aparelho"
+                            [src]="equipment.image"
+                            height="350"
+                          ></ion-img>
+                        </p>
+                      </ng-container>
+                    </ion-col>
+                    <ion-col size="12" size-sm="2" class="detail">
+                      <ng-container
+                        *ngIf="!setupInfoStore.setups.length;else noSetupWarning"
+                      >
+                        Carga, ajuste e repetição não definidos para esse
+                        exercício. Consulte o profissional para incluir essas
+                        informações em seu exercício.</ng-container
+                      >
+                      <ng-template #noSetupWarning
+                        ><ng-container
+                          *ngFor="let setup of setupInfoStore.setups; let setupIndex = index"
+                          ><form #mp>
+                            <p>
+                              Repetição {{ setupIndex + 1 }}: {{
+                              setup.repetition | titlecase }}
+                            </p>
+                            <p>
+                              <ion-input
+                                label="Ajuste {{ setupIndex + 1 }}: "
+                                labelPlacement="default"
+                                type="text"
+                                [name]="'set'+ (setupIndex+1)"
+                                [(ngModel)]="setupInfoStore.setups[setupIndex].set"
+                                (ionChange)="setupInfoStore.updateSetupSelected(setupInfoStore.setups[setupIndex])"
+                                required
+                              ></ion-input>
+                            </p>
+                            <p>
+                              <ion-input
+                                label="Carga {{ setupIndex + 1 }}[Kg]: "
+                                labelPlacement="default"
+                                type="number"
+                                [name]="'load'+ (setupIndex+1)"
+                                [(ngModel)]="setupInfoStore.setups[setupIndex].load"
+                                (ionChange)="setupInfoStore.updateSetupSelected(setupInfoStore.setups[setupIndex])"
+                                required
+                              ></ion-input>
+                            </p></form
+                        ></ng-container>
+                      </ng-template> </ion-col
+                    ><ion-col size="12" size-sm="7" class="detail"
+                      ><p>Video tutorial:</p>
+                      <p>
+                        <video
+                          width="100%"
+                          height="350"
+                          controlsList="nodownload"
+                          controls
+                        >
+                          <source
+                            [src]="exerciseInfoStore.exercises[0].video.location"
+                            [type]="exerciseInfoStore.exercises[0].video.mimetype"
+                          />
+                          Esse browser não suporta video
+                        </video>
+                      </p>
+                    </ion-col>
+                  </ion-row>
+
+                  <!-- Video Details -->
+                </form>
+
+                <ion-row>
+                  <ion-col size="12" size-md="6" class="colContent"
+                    ><ion-icon name="rocket-outline" slot="start"></ion-icon>
+                    Evoluçao de carga
+                    <ion-spinner
+                      slot="end"
+                      name="dots"
+                      *ngIf="this.historyInfoStore.loading"
+                    ></ion-spinner
+                    ><app-history [idExercise]="idExercise"></app-history>
+                  </ion-col>
+                  <ion-col size="12" size-md="6" class="colContent">
+                    <ion-icon name="rocket-outline" slot="start"></ion-icon>
+                    Resumo mensal
+                    <ion-spinner
+                      slot="end"
+                      name="dots"
+                      *ngIf="this.historyInfoStore.loading"
+                    ></ion-spinner
+                    ><app-history-by-month
+                      [idExercise]="idExercise"
+                    ></app-history-by-month>
+                  </ion-col>
+                </ion-row>
+              </ng-container>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    </ng-container>
+  </ion-grid>
+  <ion-toast
+    [isOpen]="isToastOpen"
+    message="Treino concluído!"
+    [duration]="5000"
+    [buttons]="toastButtons"
+    (didDismiss)="setRoleMessage($event)"
+  ></ion-toast>
+</ion-content>

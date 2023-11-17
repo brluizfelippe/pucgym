@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Administração</ion-title>
+
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <!-- Teste de inclusão de componente d3 -->
+      <!-- <ion-col><app-exercise></app-exercise></ion-col> -->
+      <ion-col>
+        <ion-card>
+          <!-- Título do cartão -->
+          <ion-item id="cardTitle"
+            ><ion-icon name="cog-outline" slot="start"></ion-icon>Funções
+            disponiveis</ion-item
+          >
+          <!-- Fim do título do cartão -->
+
+          <!-- Início de elemento de grupo muscular -->
+          <ion-item routerLink="/landing/muscle" routerDirection="root"
+            ><ion-label>Grupo musucular </ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.muscleInfoStore.muscleAmount()}}</ion-badge
+            >
+            <ion-icon name="body-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.muscleInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de grupo muscular -->
+
+          <!-- Início de elemento de exercícios -->
+          <ion-item routerLink="/landing/exercise" routerDirection="root"
+            ><ion-label>Exerícios</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.exerciseInfoStore.exerciseAmount()}}</ion-badge
+            ><ion-icon name="fitness-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.exerciseInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de exercícios -->
+
+          <!-- Início de elemento de treinos -->
+          <ion-item routerLink="/landing/training" routerDirection="root"
+            ><ion-label>Treinos</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.trainingInfoStore.trainingAmount()}}</ion-badge
+            ><ion-icon name="pulse-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.trainingInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de treinos -->
+
+          <!-- Inicio de elemento de programa de treino -->
+          <ion-item routerLink="/landing/program" routerDirection="root"
+            ><ion-label>Programas de treinamento</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.programInfoStore.programAmount()}}</ion-badge
+            ><ion-icon name="golf-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.programInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de programa de treino -->
+
+          <!-- Início de elemento de vídeo -->
+          <ion-item routerLink="/landing/video" routerDirection="root"
+            ><ion-label>Videos</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.videoInfoStore.videoAmount()}}</ion-badge
+            >
+            <ion-icon name="videocam-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.videoInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de vídeo -->
+
+          <!-- Início de elemento de equipamento -->
+          <ion-item routerLink="/landing/equipment" routerDirection="root"
+            ><ion-label>Aparelhos</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.equipmentInfoStore.equipmentAmount}}</ion-badge
+            >
+            <ion-icon name="barbell-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.equipmentInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de equipamento -->
+
+          <!-- Início de elemento de usuário -->
+          <ion-item routerLink="/landing/user" routerDirection="root"
+            ><ion-label>Usuários</ion-label
+            ><ion-badge color="light" slot="end"
+              >{{this.userInfoStore.userAmount()}}</ion-badge
+            ><ion-icon name="id-card-outline" slot="end"></ion-icon
+            ><ion-spinner
+              slot="end"
+              name="dots"
+              *ngIf="this.userInfoStore.loading"
+            ></ion-spinner
+          ></ion-item>
+          <!-- Fim de elemento de usuário -->
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

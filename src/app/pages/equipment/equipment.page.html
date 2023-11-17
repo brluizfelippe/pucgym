@@ -1,0 +1,200 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/landing/admin"
+      ></ion-back-button> </ion-buttons
+    ><ion-title>Aparelhos</ion-title>
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.equipmentInfoStore.loading"
+    ></ion-spinner>
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="8" *ngIf="!this.equipmentInfoStore.loading">
+        <form #f="ngForm">
+          <ion-item *ngIf="!this.equipmentInfoStore.equipments.length">
+            <ion-label>Nenhum aparelho cadastrado</ion-label>
+          </ion-item>
+          <ion-card
+            *ngFor="let equipment of this.equipmentInfoStore.equipments; let i = index"
+          >
+            <ion-item id="cardTitle"
+              ><ion-icon name="barbell-outline" slot="start"></ion-icon
+              >{{equipment.name |titlecase}}
+            </ion-item>
+            <div *ngIf="editItem && i===selectedIndex">
+              <ion-item>
+                <ion-label position="stacked">Aparelho:</ion-label>
+                <ion-input
+                  type="text"
+                  placeholder="{{this.equipmentInfoStore.equipments[i].name}}"
+                  name="equipmentName"
+                  [ngModel]="this.equipmentInfoStore.equipments[i].name"
+                  required
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-img
+                  [src]="this.equipmentInfoStore.equipments[i].image.location"
+                ></ion-img>
+              </ion-item>
+            </div>
+            <ion-item>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="success"
+                (click)="onUpdate(f,equipment)"
+                *ngIf="editItem && i===selectedIndex"
+                [disabled]="!f.valid"
+              >
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+              </ion-button>
+
+              <input
+                type="file"
+                (change)="onFileChange($event)"
+                name="file"
+                accept="image/*"
+                style="display: none"
+                id="arquivo"
+              />
+              <ion-button
+                slot="end"
+                (click)="onSelecionaArquivo()"
+                color="light"
+                fill="clear"
+                size="small"
+                shape="round"
+                strong="true"
+                *ngIf="editItem && i===selectedIndex"
+                ><ion-icon name="cloud-upload-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="danger"
+                (click)="onDelete(equipment)"
+                *ngIf="editItem && i===selectedIndex"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onReturn()"
+                *ngIf="editItem && i===selectedIndex"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onEdit(i)"
+                *ngIf="!(editItem && i===selectedIndex)"
+              >
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <div
+              id="arquivoSelecionado"
+              *ngIf="editItem && i===selectedIndex"
+            ></div>
+          </ion-card>
+
+          <ion-card>
+            <div *ngIf="newItem">
+              <ion-item>
+                <ion-label position="stacked">Aparelho:</ion-label>
+                <ion-input
+                  type="text"
+                  placeholder="nome do aparelho"
+                  name="newEquipment"
+                  ngModel
+                  required
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <div id="arquivoSelecionado" slot="start"></div>
+                <input
+                  type="file"
+                  (change)="onFileChange($event)"
+                  name="file"
+                  accept="image/*"
+                  style="display: none"
+                  id="arquivo" />
+                <ion-button
+                  slot="end"
+                  (click)="onSelecionaArquivo()"
+                  color="light"
+                  fill="clear"
+                  size="small"
+                  shape="round"
+                  strong="true"
+                  ><ion-icon name="cloud-upload-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onCreate(f)"
+                  [disabled]="!f.valid"
+                >
+                  <ion-icon name="checkmark-done-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onReturn()"
+                >
+                  <ion-icon name="close-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+            <div *ngIf="!newItem">
+              <ion-item lines="none"
+                ><ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onNew()"
+                >
+                  <ion-icon name="add-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

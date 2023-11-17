@@ -24,3 +24,146 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+@font-face {
+  font-family: "Raleway"; //This is what we are going to call
+  src: url("./assets/fonts/Raleway/Raleway-VariableFont_wght.ttf");
+}
+
+ion-content.home {
+  // --background: #17153a url("/assets/img/Logo.png") no-repeat bottom / 35%;
+  --background: rgb(239, 133, 53) url("/assets/img/Logo.png") no-repeat bottom /
+    35%;
+}
+ion-content {
+  --background: #f9f7dc;
+}
+ion-card {
+  --background: #f9f7dc;
+}
+ion-row {
+  --background: #f9f7dc;
+  display: flex;
+  align-items: stretch;
+}
+ion-label {
+  // --color: #fdcb0a;
+  --color: #763c00;
+}
+ion-badge {
+  --color: #763c00;
+  --background: #ef8535;
+}
+
+ion-col {
+  background-color: #f9f7dc;
+  border: solid 1px #f9f7dc;
+  color: #ef8535;
+  text-align: center;
+}
+ion-col .detail {
+  background-color: #f9f7dc;
+  border: solid 1px #f9f7dc;
+  color: #ef8535;
+  text-align: left;
+}
+ion-toolbar {
+  //--ion-background-color: rgb(49, 39, 141);
+  --color: #ef8535;
+  --padding-end: 10px;
+}
+
+ion-toolbar ion-icon {
+  color: #f9f7dc;
+}
+ion-chip {
+  --background: #ef8535;
+  --color: #f9f7dc;
+}
+ion-searchbar {
+  --color: #763c00;
+}
+
+a {
+  font-size: 10px;
+}
+ion-select {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+}
+
+ion-split-pane {
+  --side-width: 2em;
+}
+
+ion-menu-button {
+  --color: #ef8535;
+}
+
+ion-item {
+  --background: #f9f7dc;
+  color: #ef8535;
+  // --margin: 10 10;
+}
+ion-icon {
+  color: #ef8535;
+}
+
+ion-spinner {
+  color: #763c00;
+}
+ion-tab-bar,
+ion-tab-button,
+ion-tab-button .ion-icon,
+ion-tab-button .ion-badge,
+ion-tab-button .ion-label {
+  color: #ef8535;
+  --color-selected: #f9f7dc;
+  --background-focused: #763c00;
+}
+
+#cardTitle,
+#cardTitle ion-icon {
+  --background: #ef8535;
+  color: #f9f7dc;
+}
+
+.itemSelect {
+  padding-bottom: 10px;
+  // min-height: 6.4rem;
+}
+.select {
+  height: 100%;
+  padding-bottom: 0px;
+  font-weight: 500;
+}
+.colHeader {
+  font-size: 15px;
+  //text-align: center;
+}
+.colHeaderHideForSmall {
+  font-size: 15px;
+  //text-align: center;
+}
+.colContent {
+  font-size: 10px;
+  margin: auto;
+}
+.colContentHideForSmall {
+  font-size: 10px;
+}
+.img-wrapper {
+  min-height: 200px;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+@media screen and (max-width: 800px) {
+  .colHeaderHideForSmall {
+    display: none;
+  }
+  .colContentHideForSmall {
+    display: none;
+  }
+}

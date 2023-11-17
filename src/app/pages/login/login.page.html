@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="5" class="colContent">
+        <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+          <ion-card>
+            <ion-card-header
+              ><ion-img [src]="logoUrl"></ion-img
+            ></ion-card-header>
+
+            <ion-item>
+              <ion-label position="stacked">Email</ion-label>
+              <ion-input
+                type="email"
+                name="userEmail"
+                ngModel
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Senha</ion-label>
+              <ion-input
+                type="password"
+                name="userPassword"
+                ngModel
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-button
+              color="dark"
+              ion-button
+              type="submit"
+              [disabled]="!f.valid"
+              Expand="full"
+              fill="solid"
+              size="small"
+              shape="round"
+              strong="true"
+            >
+              Acessar com email
+            </ion-button>
+
+            <ion-button
+              color="danger"
+              type="button"
+              (click)="googleSignIn()"
+              Expand="full"
+              fill="solid"
+              size="small"
+              shape="round"
+              strong="true"
+              ><ion-icon name="logo-google" slot="start"></ion-icon>
+              Acessar com google
+            </ion-button>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

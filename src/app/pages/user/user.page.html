@@ -1,0 +1,269 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/landing/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Usuários</ion-title>
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.userInfoStore.loading"
+    ></ion-spinner>
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="8" *ngIf="!this.userInfoStore.loading">
+        <form #f="ngForm">
+          <ion-item *ngIf="!this.userInfoStore.users.length">
+            <ion-label>Nenhum usuário cadastrado</ion-label>
+          </ion-item>
+          <!--####### User Card ###########-->
+          <ion-card
+            *ngFor="let user of this.userInfoStore.users; let userIndex = index"
+          >
+            <ion-item id="cardTitle"
+              ><ion-icon name="person-outline" slot="start"></ion-icon
+              >{{user.firstName }} {{user.lastName }}<ion-spinner
+                slot="end"
+                name="dots"
+                *ngIf="(this.userInfoStore.loading||this.programInfoStore.loading||this.trainingInfoStore.loading||this.setupInfoStore.loading && (userIndex===userSelectedIndex))"
+              ></ion-spinner
+            ></ion-item>
+
+            <div *ngIf="(editUserItem && userIndex===userSelectedIndex)">
+              <ion-item>
+                <ion-label position="stacked">Perfil:</ion-label>
+                <ion-select
+                  name="perfil"
+                  required
+                  [(ngModel)]="this.userInfoStore.users[userIndex].profile"
+                  placeholder="{{this.userInfoStore.users[userIndex].profile.name | titlecase}}"
+                  (ionChange)="onResetDetail()"
+                >
+                  <ion-select-option
+                    *ngFor="let profile of profileInfoStore.profiles"
+                    [value]="profile"
+                    >{{ profile.name | titlecase }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Programa:</ion-label>
+                <ion-select
+                  float="start"
+                  name="programa"
+                  [(ngModel)]="this.userInfoStore.users[userIndex].program"
+                  placeholder="{{ this.userInfoStore.users[userIndex].program === undefined ? 'programa não definido': this.userInfoStore.users[userIndex].program.name | titlecase}}"
+                  (ionChange)="onResetDetail()"
+                >
+                  <ion-select-option
+                    *ngFor="let program of programInfoStore.programs"
+                    [value]="program"
+                    >{{ program.name | titlecase}}
+                  </ion-select-option>
+                </ion-select>
+
+                <ion-button
+                  *ngIf="!showProgramDetail"
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onProgramDetail(user.program)"
+                >
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  *ngIf="showProgramDetail"
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onCloseProgramDetail(user.program)"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </div>
+            <!-- treinos do programa-->
+            <div
+              *ngIf="showProgramDetail && editUserItem && userIndex===userSelectedIndex"
+            >
+              <div
+                *ngFor="let training of programInfoStore.programs[0].trainings, let trainingIndex = index"
+              >
+                <ion-item>
+                  <ion-label position="stacked"
+                    >Treino {{trainingIndex +1}}: {{training.name |
+                    titlecase}}</ion-label
+                  >
+                  <ion-button
+                    *ngIf="!(showTrainingDetail && trainingSelectedIndex === trainingIndex)"
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onTrainingDetail(training, trainingIndex)"
+                  >
+                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button
+                    *ngIf="showTrainingDetail && trainingSelectedIndex === trainingIndex"
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="danger"
+                    (click)="onCloseTrainingDetail(training, trainingIndex)"
+                  >
+                    <ion-icon name="close-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <!--Início de exercícios por treino-->
+                <div
+                  *ngIf="showTrainingDetail && trainingSelectedIndex === trainingIndex && editUserItem"
+                >
+                  <div
+                    *ngFor="let exercise of trainingInfoStore.trainings[0].exercises, let exerciseIndex = index"
+                  >
+                    <ion-item>
+                      <ion-label position="stacked"
+                        >Exercício {{exerciseIndex +1}}: {{exercise.name |
+                        titlecase}}</ion-label
+                      >
+                      <ion-button
+                        *ngIf="!(showExerciseDetail && exerciseIndex === exerciseSelectedIndex)"
+                        slot="end"
+                        size="small"
+                        fill="clear"
+                        color="warning"
+                        (click)="onExerciseDetail(exercise, exerciseIndex)"
+                      >
+                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                      </ion-button>
+                      <ion-button
+                        *ngIf="showExerciseDetail && exerciseIndex === exerciseSelectedIndex"
+                        slot="end"
+                        size="small"
+                        fill="clear"
+                        color="warning"
+                        (click)="onCloseExerciseDetail(exercise, exerciseIndex)"
+                      >
+                        <ion-icon name="close-outline"></ion-icon>
+                      </ion-button>
+                      <!--Início de exercícios por treino-->
+                    </ion-item>
+                    <div
+                      *ngIf="showExerciseDetail && exerciseSelectedIndex === exerciseIndex && editUserItem"
+                    >
+                      <ion-item>
+                        <ion-label position="stacked">Ajuste:</ion-label>
+                        <ion-input
+                          type="string"
+                          placeholder="{{setupInfoStore.setups.length?setupInfoStore.setups[0].set:'ajuste não definido'}}"
+                          [(ngModel)]="setupInfoStore.setups[0].set"
+                          name="ajuste"
+                          required
+                          #set
+                          (ionFocus)="setEditSetup(true)"
+                        ></ion-input>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label position="stacked">Carga:</ion-label>
+                        <ion-input
+                          type="number"
+                          placeholder="{{setupInfoStore.setups.length?setupInfoStore.setups[0].load:'carga não definida'}}"
+                          [(ngModel)]="setupInfoStore.setups[0].load"
+                          name="carga"
+                          required
+                          #load
+                          (ionFocus)="setEditSetup(true)"
+                        ></ion-input>
+                      </ion-item>
+
+                      <ion-item>
+                        <ion-label position="stacked">Repetição:</ion-label>
+                        <ion-input
+                          type="string"
+                          placeholder="{{setupInfoStore.setups.length?setupInfoStore.setups[0].repetition:'repetições não definidas'}}"
+                          [(ngModel)]="setupInfoStore.setups[0].repetition"
+                          name="repeticao"
+                          required
+                          #repetition
+                          (ionFocus)="setEditSetup(true)"
+                        ></ion-input>
+                      </ion-item>
+                      <ion-item *ngIf="editSetupItem" lines="full">
+                        <ion-button
+                          slot="end"
+                          size="small"
+                          fill="clear"
+                          color="warning"
+                          (click)="onEditSetup(exercise,exerciseIndex,set.value,load.value,repetition.value,setupInfoStore.setups)"
+                        >
+                          <ion-icon name="save-outline"></ion-icon>
+                        </ion-button>
+                      </ion-item>
+                    </div>
+                  </div>
+                </div>
+                <!--Fim de treinos para programa-->
+              </div>
+            </div>
+            <ion-item *ngIf="!(userIndex===userSelectedIndex)">
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="warning"
+                (click)="onEditUser(userIndex,user)"
+              >
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-item *ngIf="editUserItem && userIndex===userSelectedIndex">
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="success"
+                (click)="onUpdate(f,user)"
+                [disabled]="!f.valid"
+              >
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+              </ion-button>
+
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="primary"
+                (click)="onReturn()"
+                *ngIf="editUserItem && userIndex===userSelectedIndex"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+          <!--####### User Card ###########-->
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

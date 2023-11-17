@@ -1,0 +1,409 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/landing/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Exercícios</ion-title>
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.exerciseInfoStore.loading"
+    ></ion-spinner>
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="8" *ngIf="!this.exerciseInfoStore.loading">
+        <form #f="ngForm">
+          <ion-card
+            *ngFor="let exercise of this.exerciseInfoStore.exercises; let exerciseIndex = index"
+          >
+            <ion-item id="cardTitle"
+              ><ion-icon name="fitness-outline" slot="start"></ion-icon
+              >{{exercise.name|titlecase}}</ion-item
+            >
+            <ion-item *ngIf="!this.exerciseInfoStore.exercises.length">
+              Nenhum exercício cadastrado
+            </ion-item>
+
+            <div *ngIf="(editItem && exerciseIndex===exerciseSelectedIndex)">
+              <ion-item>
+                <ion-label position="stacked">Exercício:</ion-label>
+                <ion-input
+                  type="text"
+                  name="exerciseName"
+                  [ngModel]="this.exerciseInfoStore.exercises[exerciseIndex].name"
+                  placeholder="this.exerciseInfoStore.exercises[exerciseIndex].name"
+                  required=""
+                ></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Grupo Muscular:</ion-label>
+                <ion-select
+                  name="grupoMuscular"
+                  required
+                  [ngModel]="this.exerciseInfoStore.exercises[exerciseIndex].muscle"
+                  placeholder="{{this.exerciseInfoStore.exercises[exerciseIndex].muscle.name}}"
+                >
+                  <ion-select-option
+                    *ngFor="let muscle of muscleInfoStore.muscles"
+                    [value]="muscle"
+                    >{{ muscle.name | uppercase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.videoInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <!--  início input de vídeo -->
+              <ion-item>
+                <ion-label position="stacked">Video:</ion-label>
+                <ion-select
+                  name="video"
+                  required
+                  [ngModel]="this.exerciseInfoStore.exercises[exerciseIndex].video"
+                  placeholder="{{this.exerciseInfoStore.exercises[exerciseIndex].video.originalname}}"
+                >
+                  <ion-select-option
+                    *ngFor="let video of videoInfoStore.videos"
+                    [value]="video"
+                    >{{ video.originalname | uppercase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.videoInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <!-- fim de input de vídeo -->
+              <!-- início de lista de aparelhos -->
+              <div
+                *ngFor="let equipment of exercise.equipments; let equipmentIndex = index"
+              >
+                <ion-item>
+                  <ion-label position="stacked"
+                    >Aparelho {{equipmentIndex +1}}:</ion-label
+                  >
+                  <ion-select
+                    name="eq"
+                    required
+                    [(ngModel)]="this.exerciseInfoStore.exercises[exerciseIndex].equipments[equipmentIndex]"
+                    placeholder="{{this.exerciseInfoStore.exercises[exerciseIndex].equipments[equipmentIndex].name}}"
+                  >
+                    <ion-select-option
+                      *ngFor="let eq of equipmentInfoStore.equipments"
+                      [value]="eq"
+                      >{{ eq.name | uppercase }}
+                    </ion-select-option> </ion-select
+                  ><ion-spinner
+                    class="ion-float-right"
+                    *ngIf="this.equipmentInfoStore.loading"
+                  ></ion-spinner>
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onRemoveEquipment(exerciseIndex,equipmentIndex)"
+                  >
+                    <ion-icon name="remove-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </div>
+              <!-- fim de lista de aparelhos -->
+              <!-- início botão para adicionar aparelhos ao exercício -->
+              <ion-item
+                *ngIf="!showAddEquipment && !(exercise.equipments.length > 2)"
+              >
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onShowAddEquipment()"
+                >
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <!-- fim de botão para adicionar aparelhos ao exercício -->
+              <!-- início de elemento para seleção de novo equipamento -->
+              <ion-item *ngIf="showAddEquipment">
+                <ion-select
+                  name="eqAdded"
+                  required
+                  ngModel
+                  placeholder="Selecione o novo aparelho"
+                >
+                  <ion-select-option
+                    *ngFor="let eq of equipmentInfoStore.equipments"
+                    [value]="eq"
+                    >{{ eq.name | uppercase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.equipmentInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <!-- fim de elemento para seleção de novo equipamento -->
+              <!-- início de elemento com botões para confirmar ou fechar elemento para adição de aparelho -->
+              <ion-item *ngIf="showAddEquipment">
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onAddEquipment(f,exerciseIndex)"
+                  [disabled]="!f.valid"
+                >
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onCloseAddEquipment()"
+                  *ngIf="editItem && exerciseIndex===exerciseSelectedIndex"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <!-- fim de elemento com botões para confirmar ou fechar elemento para adição de aparelho -->
+            </div>
+
+            <ion-item *ngIf="!(exerciseIndex===exerciseSelectedIndex)">
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onEdit(exerciseIndex)"
+              >
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-item
+              *ngIf="editItem && exerciseIndex===exerciseSelectedIndex && !showAddEquipment"
+            >
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="success"
+                (click)="onUpdate(f,exercise)"
+                [disabled]="!f.valid"
+              >
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="danger"
+                (click)="onDelete(exercise)"
+                *ngIf="editItem && exerciseIndex===exerciseSelectedIndex"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onReturn()"
+                *ngIf="editItem && exerciseIndex===exerciseSelectedIndex"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+          <!-- início de elemento para criar novo exercício -->
+          <ion-card>
+            <div *ngIf="newItem">
+              <ion-item>
+                <ion-label position="stacked">Exercício:</ion-label>
+                <ion-input
+                  type="text"
+                  name="exerciseName"
+                  ngModel
+                  placeholder="nome do exercício"
+                  required=""
+                ></ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Grupo Muscular:</ion-label>
+                <ion-select
+                  name="grupoMuscular"
+                  required
+                  ngModel
+                  placeholder="selecione o grupo muscular"
+                >
+                  <ion-select-option
+                    *ngFor="let muscle of muscleInfoStore.muscles"
+                    [value]="muscle"
+                    >{{ muscle.name | titlecase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.videoInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Video:</ion-label>
+                <ion-select
+                  name="video"
+                  required
+                  ngModel
+                  placeholder="selecione vídeo"
+                >
+                  <ion-select-option
+                    *ngFor="let video of videoInfoStore.videos"
+                    [value]="video"
+                    >{{ video.originalname | titlecase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.videoInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <!-- início de lista de aparelhos -->
+              <div
+                *ngFor="let equipment of exerciseInfoStore.exerciseSelected.equipments; let equipmentIndex = index"
+              >
+                <ion-item>
+                  <ion-label position="stacked"
+                    >Aparelho {{equipmentIndex +1}}:</ion-label
+                  >
+                  {{equipment.name|titlecase}}
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onRemoveEquipmentForNewExercise(equipmentIndex)"
+                  >
+                    <ion-icon name="remove-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </div>
+              <!-- fim de lista de aparelhos -->
+              <!-- início botão para adicionar aparelhos ao exercício -->
+              <ion-item *ngIf="!showAddEquipmentForNewExercise "
+                >Adicionar aparelho
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onShowAddEquipmentForNewExercise()"
+                >
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <!-- fim de botão para adicionar aparelhos ao exercício -->
+              <!-- início de elemento para seleção de novo equipamento -->
+              <ion-item *ngIf="showAddEquipmentForNewExercise">
+                <ion-label position="stacked">Aparelho:</ion-label>
+                <ion-select
+                  name="eqAddedForNewExercise"
+                  required
+                  ngModel
+                  placeholder="Selecione o novo aparelho"
+                >
+                  <ion-select-option
+                    *ngFor="let eq of equipmentInfoStore.equipments"
+                    [value]="eq"
+                    >{{ eq.name | uppercase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.equipmentInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <!-- fim de elemento para seleção de novo equipamento -->
+              <!-- início de elemento com botões para confirmar ou fechar elemento para adição de aparelho -->
+              <ion-item *ngIf="showAddEquipmentForNewExercise">
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onAddEquipmentForNewExercise(f)"
+                  [disabled]="!f.valid"
+                >
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onCloseAddEquipmentForNewExercise()"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <!-- fim de elemento com botões para confirmar ou fechar elemento para adição de aparelho -->
+            </div>
+            <ion-item
+              *ngIf="newItem && !showAddEquipmentForNewExercise"
+              lines="none"
+            >
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="success"
+                (click)="onCreate(f)"
+                [disabled]="!f.valid"
+              >
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onReturn()"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngIf="!newItem">
+              <ion-item *ngIf="!newItem" lines="none"
+                ><ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onNew()"
+                >
+                  <ion-icon name="add-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+          </ion-card>
+          <!-- fim de elemento para criar novo exercício -->
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

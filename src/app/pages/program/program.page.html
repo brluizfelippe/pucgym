@@ -1,0 +1,300 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/landing/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Programa</ion-title>
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.programInfoStore.loading"
+    ></ion-spinner>
+    <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
+      <ion-avatar>
+        <ng-container
+          *ngIf="authInfoStore.imageUrl === ''||authInfoStore.imageUrl===undefined; else userImage"
+        >
+          <ion-icon name="person" size="large" aria-hidden="true"></ion-icon>
+        </ng-container>
+        <ng-template #userImage>
+          <ion-img [src]="authInfoStore.imageUrl"></ion-img>
+        </ng-template>
+      </ion-avatar>
+      <ion-label>{{ authInfoStore.user }}</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="8" *ngIf="!this.programInfoStore.loading">
+        <form #f="ngForm">
+          <ion-item *ngIf="!this.programInfoStore.programs.length">
+            <ion-label>Nenhum programa cadastrado</ion-label>
+          </ion-item>
+          <ion-card
+            *ngFor="let program of this.programInfoStore.programs; let programIndex = index"
+          >
+            <ion-item id="cardTitle">
+              <ion-icon name="golf-outline" slot="start" l></ion-icon
+              >{{program.name |titlecase}}</ion-item
+            >
+
+            <div *ngIf="(editItem && programIndex===programSelectedIndex)">
+              <ion-item>
+                <ion-label position="stacked">Programa:</ion-label>
+                <ion-input
+                  type="text"
+                  name="programName"
+                  [ngModel]="this.programInfoStore.programs[programIndex].name"
+                  placeholder="{{this.programInfoStore.programs[programIndex].name}}"
+                  required=""
+                ></ion-input>
+              </ion-item>
+              <div
+                *ngFor="let training of program.trainings; let trainingIndex=index"
+              >
+                <ion-item>
+                  <ion-label position="stacked"
+                    >Treino {{trainingIndex +1}}:</ion-label
+                  >
+                  {{this.programInfoStore.programs[programIndex].trainings[trainingIndex].name
+                  |titlecase}}
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onRemoveTraining(programIndex,trainingIndex)"
+                  >
+                    <ion-icon name="remove-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </div>
+              <div *ngIf="showAddTraining">
+                <ion-item>
+                  <ion-label position="stacked">Treino:</ion-label>
+                  <ion-select
+                    name="newTraining"
+                    required
+                    ngModel
+                    placeholder="Selecione o treino"
+                  >
+                    <ion-select-option
+                      *ngFor="let training of trainingInfoStore.trainings"
+                      [value]="training"
+                      >{{ training.name | titlecase }}
+                    </ion-select-option> </ion-select
+                  ><ion-spinner
+                    class="ion-float-right"
+                    *ngIf="this.trainingInfoStore.loading"
+                  ></ion-spinner>
+                </ion-item>
+                <ion-item>
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="success"
+                    (click)="onAddTraining(programIndex,f)"
+                    [disabled]="!f.valid"
+                  >
+                    <ion-icon name="checkmark-outline"></ion-icon>
+                  </ion-button>
+
+                  <ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onCloseAddTraining()"
+                  >
+                    <ion-icon name="close-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </div>
+              <ion-item
+                *ngIf="!showAddTraining && !(program.trainings.length > 9)"
+              >
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onShowAddTraining()"
+                >
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </div>
+            <ion-item *ngIf="!(programIndex===programSelectedIndex)">
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onEdit(programIndex)"
+              >
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-item
+              *ngIf="editItem && programIndex===programSelectedIndex && !showAddTraining"
+            >
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="success"
+                (click)="onUpdate(f,program)"
+                [disabled]="!f.valid"
+              >
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="danger"
+                (click)="onDelete(program)"
+                *ngIf="editItem && programIndex===programSelectedIndex"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+              <ion-button
+                slot="end"
+                size="small"
+                fill="clear"
+                color="light"
+                (click)="onReturn()"
+                *ngIf="editItem && programIndex===programSelectedIndex"
+              >
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+          <!-- Início de elemento para novo programa -->
+          <ion-card>
+            <div *ngIf="newItem">
+              <ion-item>
+                <ion-label position="stacked">Programa:</ion-label>
+                <ion-input
+                  type="text"
+                  name="programName"
+                  ngModel
+                  placeholder="Nome do programa"
+                  required=""
+                ></ion-input>
+              </ion-item>
+              <div
+                *ngFor="let training of this.programInfoStore.programSelected.trainings; let trainingIndex = index"
+              >
+                <ion-item>
+                  <ion-label position="stacked"
+                    >Treino {{trainingIndex +1}}:</ion-label
+                  >
+                  {{training.name|titlecase}}<ion-button
+                    slot="end"
+                    size="small"
+                    fill="clear"
+                    color="light"
+                    (click)="onRemoveTrainingForNewProgram(trainingIndex)"
+                  >
+                    <ion-icon name="remove-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </div>
+              <ion-item *ngIf="!showAddTrainingForNewProgram"
+                >Adicionar treino
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onShowAddTrainingForNewProgram()"
+                >
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-item *ngIf="showAddTrainingForNewProgram">
+                <ion-label position="stacked">Treino:</ion-label>
+                <ion-select
+                  name="trainingAddedForNewProgram"
+                  required
+                  ngModel
+                  placeholder="Selecione o novo treino"
+                >
+                  <ion-select-option
+                    *ngFor="let training of trainingInfoStore.trainings"
+                    [value]="training"
+                    >{{ training.name | uppercase }}
+                  </ion-select-option> </ion-select
+                ><ion-spinner
+                  class="ion-float-right"
+                  *ngIf="this.trainingInfoStore.loading"
+                ></ion-spinner>
+              </ion-item>
+              <ion-item *ngIf="showAddTrainingForNewProgram">
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onAddTrainingForNewProgram(f)"
+                  [disabled]="!f.valid"
+                >
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onCloseAddTrainingForNewProgram()"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-item *ngIf="!showAddTrainingForNewProgram">
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="success"
+                  (click)="onCreate(f)"
+                  [disabled]="!f.valid"
+                >
+                  <ion-icon name="checkmark-done-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onReturn()"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </div>
+            <div *ngIf="!newItem">
+              <ion-item lines="none"
+                ><ion-button
+                  slot="end"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  (click)="onNew()"
+                >
+                  <ion-icon name="add-outline"></ion-icon> </ion-button
+              ></ion-item>
+            </div>
+          </ion-card>
+          <!-- Fim de elemento para novo programa -->
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
