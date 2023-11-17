@@ -18,7 +18,7 @@ O Projeto Integrado se constitui no desenvolvimento de uma aplicação Web compl
 
 Para a realização do trabalho, é necessário fazer o mapeamento do espaço problema e dos objetivos associados a este contexto na perspectiva dos principais interessados (stakeholders). O aluno deve detalhar este contexto e, em seguida, elaborar os artefatos que definem a solução a ser desenvolvida. Em seguida, será desenvolvido o projeto de forma integral, com as funcionalidades que solucionam o problema identificado para os clientes alvo do projeto. Será importante montar a estrutura base da aplicação, de acordo com a stack/frameworks escolhidos e aplicá-la no desenvolvimento das funcionalidades.
 
-A entrega se baseia em um relatório técnico que deve documentar todo o projeto feito, levando em consideração os itens listados a seguir:
+**A entrega se baseia em um relatório técnico** que deve documentar todo o projeto feito, levando em consideração os itens listados a seguir:
 
 - Product Discovery (Design Thinking | Lean Inception)
 - Business Model Canvas | Lean Canvas
@@ -57,7 +57,7 @@ O professor orientador e, em especial, os alunos da disciplina devem observar as
 
 ##### 3.1.1. Arquivo do Relatório Técnico a ser entregue no AVA (Canvas)
 
-O canal de entrega aceita apenas um arquivo no formato PDF que se constitui do Relatório Técnico do projeto. Neste documento são descritos ou relacionados todos os demais itens que fazem parte do trabalho. Para itens externos (ambientes hospedados na Internet, vídeos de apresentação, códigos fonte, entre outros), deve ser apresentado no referido documento os links de acesso.
+O canal de entrega aceita apenas um **arquivo no formato PDF** que se constitui do Relatório Técnico do projeto. Neste documento são descritos ou relacionados todos os demais itens que fazem parte do trabalho. Para itens externos (ambientes hospedados na Internet, vídeos de apresentação, códigos fonte, entre outros), deve ser apresentado no referido documento os links de acesso.
 Importante: O aluno deve certificar que o professor orientador terá acesso ao item externo com as informações fornecidas no referido documento. Tais itens adicionais devem permanecer disponíveis durante o intervalo de tempo definido no Cronograma da Disciplina para que possam ser avaliados pelos professores envolvidos no processo.
 
 ##### 3.1.2. Datas de entrega
@@ -94,12 +94,12 @@ Estes critérios trazem características funcionais e não funcionais da aplica�
 
 **CA-05**: Controle de acesso a funcionalidades: O sistema deve permitir controlar o acesso às diversas funcionalidades a partir dos perfis de usuários como, por exemplo, os seguintes: administrador do sistema, gestor/gerente/operador e usuário.
 
-**CA-06**: Menu do sistema: O sistema deve apresentar pelo menos um instrumento de navegação principal (menu de opções do sistema) que dê acesso a todas as funcionalidades que o sistema provê.|
+**CA-06**: Menu do sistema: O sistema deve apresentar pelo menos um instrumento de navegação principal (menu de opções do sistema) que dê acesso a todas as funcionalidades que o sistema provê.
 
 **CA-07**: Funcionalidades de cadastro (CRUD): O sistema deve ser estruturado com pelo menos 4 entidades para as quais devem ser fornecidas telas de cadastro completas cumprindo os seguintes itens:
 
 - A tela deve oferecer todas as operações de CRUD (Create/Retrieve/Update/Delete), a menos que haja uma regra de negócio que justifique não poder excluir ou alterar os dados diretamente;
-- A tela deve oferecer funcionalidade de exportação de dados em formato Excel ou PDF;
+- A tela deve oferecer funcionalidade de **exportação de dados em formato Excel ou PDF**;
 - Nos campos do cadastro que estão associados a outras entidades do sistema, deve ser fornecido um mecanismo de lookup dos dados da outra entidade (combobox ou janela de seleção), além da possibilidade de se informar o respectivo código da entidade associada.
 
 **CA-08**: Funcionalidade de cadastro mestre/detalhe: O sistema deve apresentar pelo menos uma funcionalidade de cadastro de duas entidades associadas (mestre/detalhe) em uma mesma tela. Entende-se por cadastro mestre-detalhe, a funcionalidade que, em uma mesma tela são informadas as informações de duas entidades que possuam relacionamento 1-N ou N-M. Ao cadastrar uma instância da entidade "mestre", deve ser possível incluir as instâncias associadas da entidade "detalhe" e visualizar ambas ao mesmo tempo.
@@ -116,11 +116,12 @@ Para efeitos da avaliação, não serão consideradas neste critério, as funcio
 - As funcionalidade de controle acesso a funcionalidade descritas no CA-05;
 - Os cadastros comuns (CRUD) descritos no CA-07;
 - O cadastro mestre/detalha descrito no CA-08.
+
   **IMPORTANTE**: Cada funcionalidade adicional deve ser tratada em uma tela distinta das demais. Funcionalidades dispostas em uma mesma tela serão entendidas como uma única funcionalidade adicional, contabilizando uma dentro das funcionalidades exigidas neste critério.
 
-**CA-10**: Funcionalidade de estatísticas do sistema: O sistema deve apresentar pelo menos uma funcionalidade que apresente as estatísticas do sistema de forma gráfica (gráfico de barras, gráfico de linhas, mapa, etc.) em que sejam mostrados pelo menos 5 indicadores (Ex: número de consultas por mês, total de vendas por mês ou por loja, total de eventos da semana ou por categoria).
+**CA-10**: Funcionalidade de estatísticas do sistema: O sistema deve apresentar pelo menos uma funcionalidade que apresente as estatísticas do sistema de forma gráfica (gráfico de barras, gráfico de linhas, mapa, etc.) em que sejam mostrados **pelo menos 5 indicadores** (Ex: número de consultas por mês, total de vendas por mês ou por loja, total de eventos da semana ou por categoria).
 
-**CA-11**: Banco de dados: Os dados do sistema devem ser armazenados em um banco de dados relacional ou noSql. O banco de dados deverá ter no mínimo 8 tabelas associadas ao propósito principal da solução. No caso de projetos que usem bancos noSQL, devem ser retratadas pelo menos 6 entidades.
+**CA-11**: Banco de dados: Os dados do sistema devem ser armazenados em um banco de dados relacional ou noSql. O banco de dados deverá ter no **mínimo 8 tabelas** associadas ao propósito principal da solução. No caso de projetos que usem bancos noSQL, devem ser retratadas pelo menos 6 entidades.
 **IMPORTANTE**: Não entram na contagem deste critério as tabelas relacionadas a usuários e ao controle de acesso a funcionalidades.
 
 **CA-12**: Plataformas de Gestão de Conteúdo: Para a construção da solução proposta neste trabalho, NÃO poderá ser utilizada uma plataforma pronta de gestão de sites de conteúdos como Wordpress, Drupal, Joomla ou similar.
