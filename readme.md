@@ -2,7 +2,7 @@
 
 ### Regulamento da Tutoria do Projeto Integrado
 
-####1. Introdução
+#### 1. Introdução
 
 Este documento apresenta as informações necessárias para a orientação sobre a tutoria do Projeto Integrado (TCC) para o curso de Pós-graduação Lato Sensu em Desenvolvimento Web Full Stack.
 
@@ -12,7 +12,7 @@ Durante todo o trabalho nessa tutoria, o aluno será acompanhado por um Professo
 
 A estrutura do trabalho a ser desenvolvido é descrita no item 2. Escopo do Trabalho. As etapas do trabalho e os itens que devem ser produzidos são descritos no item 3. Entrega. Os detalhes do processo de avaliação, bem como os critérios de aceitação das entregas, estão descritos no item 4. Avaliação.
 
-####2. Escopo do Trabalho
+#### 2. Escopo do Trabalho
 
 O Projeto Integrado se constitui no desenvolvimento de uma aplicação Web completa com módulo servidor e módulo cliente. O tema do projeto é de escolha do aluno que deverá descrever o contexto e o problema para o qual a solução é endereçada.
 
@@ -45,30 +45,30 @@ A entrega se baseia em um relatório técnico que deve documentar todo o projeto
 
 **IMPORTANTE**: O software OBS Studio é uma sugestão de software para gravação de screencast.
 
-####3. Entrega
+#### 3. Entrega
 
 Este item trata do processo de entrega dos resultados do projeto que é coordenado através do Ambiente Virtual de Aprendizagem (Canvas).
 
 Abordamos a seguir as regras que devem ser observadas pelos alunos e o cronograma com as datas das entregas.
 
-#####3.1. Regras das Entregas
+##### 3.1. Regras das Entregas
 
 O professor orientador e, em especial, os alunos da disciplina devem observar as seguintes regras sobre a entrega dos artefatos:
 
-#####3.1.1. Arquivo do Relatório Técnico a ser entregue no AVA (Canvas)
+##### 3.1.1. Arquivo do Relatório Técnico a ser entregue no AVA (Canvas)
 
 O canal de entrega aceita apenas um arquivo no formato PDF que se constitui do Relatório Técnico do projeto. Neste documento são descritos ou relacionados todos os demais itens que fazem parte do trabalho. Para itens externos (ambientes hospedados na Internet, vídeos de apresentação, códigos fonte, entre outros), deve ser apresentado no referido documento os links de acesso.
 Importante: O aluno deve certificar que o professor orientador terá acesso ao item externo com as informações fornecidas no referido documento. Tais itens adicionais devem permanecer disponíveis durante o intervalo de tempo definido no Cronograma da Disciplina para que possam ser avaliados pelos professores envolvidos no processo.
 
-#####3.1.2. Datas de entrega
+##### 3.1.2. Datas de entrega
 
 Ao se matricular na tutoria, o aluno será informado sobre a data de entrega do seu trabalho.
 
-####4. Avaliação
+#### 4. Avaliação
 
 Nesta seção, são abordados o processo de avaliação do Projeto Integrado e os critérios de aceitação para o trabalho como um todo. É fundamental que o aluno observe estes critérios para planejamento do seu projeto.
 
-#####4.1 - Processo de Avaliação e Pontuação
+##### 4.1 - Processo de Avaliação e Pontuação
 
 A única entrega é avaliada em 100 pontos.
 
@@ -78,7 +78,7 @@ O Professor Orientador pode, na sua avaliação, rejeitar a entrega do aluno, ca
 
 Em situações excepcionais, poderá haver a participação da Coordenação do Curso para dirimir sobre dúvidas relacionadas ao processo de avaliação. Nestes casos, a Coordenação do Curso poderá substituir o Professor Orientador no processo de avaliação, quando solicitado pelo mesmo ou por motivos de força maior.
 
-#####4.2 - Critérios de Aceitação
+##### 4.2 - Critérios de Aceitação
 
 Para orientar a todos os envolvidos no Projeto Integrado quanto ao que precisa ser entregue e forma de avaliação do projeto a ser desenvolvido, foi definido um conjunto de critérios de aceitação.
 
