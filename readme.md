@@ -74,17 +74,41 @@ Para orientar a todos os envolvidos no Projeto Integrado quanto ao que precisa s
 
 Estes critérios trazem características funcionais e não funcionais da aplicação a ser desenvolvida e cabe ao aluno projetar a estrutura da aplicação e o conjunto de funcionalidades em conformidade com os critérios apresentados na tabela a seguir.
 
-| ID | Critério | Descrição |
-|CA-01|Aplicação 100% Web| O sistema deve ser 100% compatível com a Web, utilizando navegadores (browsers) como clientes e servidores Web como ambiente de provimento da aplicação e armazenamento de dados.|
-|CA-02|Login e registro de usuários|O sistema deve oferecer funcionalidade de login de usuários com a possibilidade do registro de novos usuários de forma autônoma por pessoas que ainda não estão cadastradas.|
-|CA-03|Integração OAuth| O sistema deve apresentar a integração com servidores de autenticação baseado em OAuth (Google Accounts, Facebook, Linkedin, etc) para o registro de novos usuários.|
-|CA-04|Responsividade|A interface do sistema deve apresentar nível avançado de adaptação a dispositivos móveis, sendo corretamente apresentada em tablets e celulares, além de desktops.|
-|CA-05|Controle de acesso a funcionalidades|O sistema deve permitir controlar o acesso às diversas funcionalidades a partir dos perfis de usuários como, por exemplo, os seguintes: administrador do sistema, gestor/gerente/operador e usuário.
-|CA-06|Menu do sistema|O sistema deve apresentar pelo menos um instrumento de navegação principal (menu de opções do sistema) que dê acesso a todas as funcionalidades que o sistema provê.|
-|CA-07|Funcionalidades de cadastro (CRUD)|O sistema deve ser estruturado com pelo menos 4 entidades para as quais devem ser fornecidas telas de cadastro completas cumprindo os seguintes itens:<br>- A tela deve oferecer todas as operações de CRUD (Create/Retrieve/Update/Delete), a menos que haja uma regra de negócio que justifique não poder excluir ou alterar os dados diretamente;<br>- A tela deve oferecer funcionalidade de exportação de dados em formato Excel ou PDF;<br>- Nos campos do cadastro que estão associados a outras entidades do sistema, deve ser fornecido um mecanismo de lookup dos dados da outra entidade (combobox ou janela de seleção), além da possibilidade de se informar o respectivo código da entidade associada.|
-|CA-08|Funcionalidade de cadastro mestre/detalhe|O sistema deve apresentar pelo menos uma funcionalidade de cadastro de duas entidades associadas (mestre/detalhe) em uma mesma tela. Entende-se por cadastro mestre-detalhe, a funcionalidade que, em uma mesma tela são informadas as informações de duas entidades que possuam relacionamento 1-N ou N-M. Ao cadastrar uma instância da entidade "mestre", deve ser possível incluir as instâncias associadas da entidade "detalhe" e visualizar ambas ao mesmo tempo.<br>- Alguns exemplos de cadastros mestre/detalhe:<br>- Cadastro de pedido e seus produtos<br>- Cadastro de pessoa e seus dependentes<br>- Cadastro de equipe e seus participantes|
-|CA-09|Funcionalidades Adicionais|O sistema deve apresentar pelo menos outras quatro (4) funcionalidades adicionais. As funcionalidades adicionais estão associadas aos processos ou operações que são realizadas no sistema e que façam uso das entidades registradas nos cadastros descritos anteriormente.<br>Para efeitos da avaliação, não serão consideradas neste critério, as funcionalidades já retratadas em outros critérios, a saber:<br>- As funcionalidade de login e integração OAuth descritas no CA-02 e CA-03, respectivamente;<br>- As funcionalidade de controle acesso a funcionalidade descritas no CA-05;<br>- Os cadastros comuns (CRUD) descritos no CA-07;<br>- O cadastro mestre/detalha descrito no CA-08.<br>IMPORTANTE: Cada funcionalidade adicional deve ser tratada em uma tela distinta das demais. Funcionalidades dispostas em uma mesma tela serão entendidas como uma única funcionalidade adicional, contabilizando uma dentro das funcionalidades exigidas neste critério.|
-|CA-10|Funcionalidade de estatísticas do sistema|O sistema deve apresentar pelo menos uma funcionalidade que apresente as estatísticas do sistema de forma gráfica (gráfico de barras, gráfico de linhas, mapa, etc.) em que sejam mostrados pelo menos 5 indicadores (Ex: número de consultas por mês, total de vendas por mês ou por loja, total de eventos da semana ou por categoria).|
-|CA-11|Banco de dados|Os dados do sistema devem ser armazenados em um banco de dados relacional ou noSql. O banco de dados deverá ter no mínimo 8 tabelas associadas ao propósito principal da solução. No caso de projetos que usem bancos noSQL, devem ser retratadas pelo menos 6 entidades.<br>IMPORTANTE: Não entram na contagem deste critério as tabelas relacionadas a usuários e ao controle de acesso a funcionalidades.|
-|CA-12|Plataformas de Gestão de Conteúdo|Para a construção da solução proposta neste trabalho, NÃO poderá ser utilizada uma plataforma pronta de gestão de sites de conteúdos como Wordpress, Drupal, Joomla ou similar.|
-|CA-13|Linguagens de Programação e Frameworks|No Front End, é permitido o uso de qualquer tipo de framework tanto para CSS quanto para JavaScript. No Back End, é permitido o uso de qualquer linguagem e frameworks voltada para Web, sendo recomendado o uso das linguagens vistas no curso.|
+**CA-01**: Aplicação 100% Web: O sistema deve ser 100% compatível com a Web, utilizando navegadores (browsers) como clientes e servidores Web como ambiente de provimento da aplicação e armazenamento de dados.
+
+**CA-02**: Login e registro de usuários: O sistema deve oferecer funcionalidade de login de usuários com a possibilidade do registro de novos usuários de forma autônoma por pessoas que ainda não estão cadastradas.
+
+**CA-03**: Integração OAuth: O sistema deve apresentar a integração com servidores de autenticação baseado em OAuth (Google Accounts, Facebook, Linkedin, etc) para o registro de novos usuários.
+
+**CA-04**: Responsividade: A interface do sistema deve apresentar nível avançado de adaptação a dispositivos móveis, sendo corretamente apresentada em tablets e celulares, além de desktops.
+
+**CA-05**: Controle de acesso a funcionalidades: O sistema deve permitir controlar o acesso às diversas funcionalidades a partir dos perfis de usuários como, por exemplo, os seguintes: administrador do sistema, gestor/gerente/operador e usuário.
+
+**CA-06**: Menu do sistema: O sistema deve apresentar pelo menos um instrumento de navegação principal (menu de opções do sistema) que dê acesso a todas as funcionalidades que o sistema provê.|
+
+**CA-07**: Funcionalidades de cadastro (CRUD): O sistema deve ser estruturado com pelo menos 4 entidades para as quais devem ser fornecidas telas de cadastro completas cumprindo os seguintes itens:<br>- A tela deve oferecer todas as operações de CRUD (Create/Retrieve/Update/Delete), a menos que haja uma regra de negócio que justifique não poder excluir ou alterar os dados diretamente;<br>- A tela deve oferecer funcionalidade de exportação de dados em formato Excel ou PDF;<br>- Nos campos do cadastro que estão associados a outras entidades do sistema, deve ser fornecido um mecanismo de lookup dos dados da outra entidade (combobox ou janela de seleção), além da possibilidade de se informar o respectivo código da entidade associada.
+
+**CA-08**: Funcionalidade de cadastro mestre/detalhe: O sistema deve apresentar pelo menos uma funcionalidade de cadastro de duas entidades associadas (mestre/detalhe) em uma mesma tela. Entende-se por cadastro mestre-detalhe, a funcionalidade que, em uma mesma tela são informadas as informações de duas entidades que possuam relacionamento 1-N ou N-M. Ao cadastrar uma instância da entidade "mestre", deve ser possível incluir as instâncias associadas da entidade "detalhe" e visualizar ambas ao mesmo tempo.
+Alguns exemplos de cadastros mestre/detalhe:
+
+- Cadastro de pedido e seus produtos
+- Cadastro de pessoa e seus dependentes
+- Cadastro de equipe e seus participantes
+
+**CA-09**: Funcionalidades Adicionais: O sistema deve apresentar pelo menos outras quatro (4) funcionalidades adicionais. As funcionalidades adicionais estão associadas aos processos ou operações que são realizadas no sistema e que façam uso das entidades registradas nos cadastros descritos anteriormente.
+Para efeitos da avaliação, não serão consideradas neste critério, as funcionalidades já retratadas em outros critérios, a saber:
+
+- As funcionalidade de login e integração OAuth descritas no CA-02 e CA-03, respectivamente;
+- As funcionalidade de controle acesso a funcionalidade descritas no CA-05;
+- Os cadastros comuns (CRUD) descritos no CA-07;
+- O cadastro mestre/detalha descrito no CA-08.
+  **IMPORTANTE**: Cada funcionalidade adicional deve ser tratada em uma tela distinta das demais. Funcionalidades dispostas em uma mesma tela serão entendidas como uma única funcionalidade adicional, contabilizando uma dentro das funcionalidades exigidas neste critério.
+
+**CA-10**: Funcionalidade de estatísticas do sistema: O sistema deve apresentar pelo menos uma funcionalidade que apresente as estatísticas do sistema de forma gráfica (gráfico de barras, gráfico de linhas, mapa, etc.) em que sejam mostrados pelo menos 5 indicadores (Ex: número de consultas por mês, total de vendas por mês ou por loja, total de eventos da semana ou por categoria).
+
+**CA-11**: Banco de dados: Os dados do sistema devem ser armazenados em um banco de dados relacional ou noSql. O banco de dados deverá ter no mínimo 8 tabelas associadas ao propósito principal da solução. No caso de projetos que usem bancos noSQL, devem ser retratadas pelo menos 6 entidades.
+**IMPORTANTE**: Não entram na contagem deste critério as tabelas relacionadas a usuários e ao controle de acesso a funcionalidades.
+
+**CA-12**: Plataformas de Gestão de Conteúdo: Para a construção da solução proposta neste trabalho, NÃO poderá ser utilizada uma plataforma pronta de gestão de sites de conteúdos como Wordpress, Drupal, Joomla ou similar.
+
+**CA-13**: Linguagens de Programação e Frameworks: No Front End, é permitido o uso de qualquer tipo de framework tanto para CSS quanto para JavaScript. No Back End, é permitido o uso de qualquer linguagem e frameworks voltada para Web, sendo recomendado o uso das linguagens vistas no curso.
