@@ -12,16 +12,6 @@ const routes: Routes = [
     redirectTo: 'landing',
     pathMatch: 'full',
   },
-  {
-    path: 'success',
-    loadChildren: () =>
-      import('./pages/success/success.module').then((m) => m.SuccessPageModule),
-  },
-  {
-    path: 'cancel',
-    loadChildren: () =>
-      import('./pages/cancel/cancel.module').then((m) => m.CancelPageModule),
-  },
 ];
 
 @NgModule({
