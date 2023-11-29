@@ -28,26 +28,31 @@ module.exports.getHistories = function (req, res) {
 module.exports.getHistoriesByMonth = function (req, res) {
   var idUser = req.query.userId;
   var idExercicio = req.query.exerciseId;
+  var idReportType = req.query.reportType;
 
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
     console.log("Connected!");
-    con.query(sql, [idExercicio, idUser], function (error, result) {
-      if (error) {
-        res.json(error);
-        // throw error;
-      }
-      console.log(result);
-      res.json(result);
+    con.query(
+      sql,
+      [idExercicio, idUser, idReportType],
+      function (error, result) {
+        if (error) {
+          res.json(error);
+          // throw error;
+        }
+        console.log(result);
+        res.json(result);
 
-      con.end(function (err) {
-        if (err) throw err;
-        console.log("Disconnected!");
-      });
-    });
+        con.end(function (err) {
+          if (err) throw err;
+          console.log("Disconnected!");
+        });
+      }
+    );
   });
-  let sql = "call buscaHistoricoMes(?,?)";
+  let sql = "call buscaHistoricoMes(?,?,?)";
 };
 module.exports.createHistory = function (req, res) {
   console.log("History", req.body);

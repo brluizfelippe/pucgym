@@ -39,7 +39,7 @@ export class ProgramPage implements OnInit {
     public router: Router,
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-    public alertController: AlertController
+    public alertCtrl: AlertController
   ) {
     this.platform.backButton.subscribeWithPriority(-1, () => {
       if (!this.routerOutlet.canGoBack()) {
@@ -99,29 +99,31 @@ export class ProgramPage implements OnInit {
   async onDelete(program: Program) {
     this.programService.onProgramSelected(program);
 
-    const alert = await this.alertController.create({
+    const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'ATENÇÃO !',
       message:
         'Você tem certeza que deseja excluir o programa ' +
         this.programInfoStore.programSelected.name +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {},
+          cssClass: 'alert-button-cancel',
+          handler: (blah) => {
+            this.programService.getPrograms();
+          },
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          cssClass: 'alert-button-confirm',
           handler: () => {
             this.programService.onDeleteProgram();
           },
         },
       ],
     });
-
     await alert.present();
     this.editItem = false;
     this.programSelectedIndex = -1;
@@ -133,10 +135,11 @@ export class ProgramPage implements OnInit {
     this.programSelectedIndex = -1;
   }
   onNew() {
+    this.programInfoStore.updateProgramSelected(new Program());
     this.newItem = true;
   }
   onCreate(form: NgForm) {
-    this.programInfoStore.programSelected.name = form.value.trainingName;
+    this.programInfoStore.programSelected.name = form.value.programName;
 
     this.programService.onProgramSelected(
       this.programInfoStore.programSelected

@@ -8,7 +8,7 @@
     <ion-spinner
       slot="end"
       name="dots"
-      *ngIf="this.equipmentInfoStore.loading"
+      *ngIf="equipmentInfoStore.loading"
     ></ion-spinner>
     <ion-chip slot="end" outline="false" *ngIf="authInfoStore.isLoggedIn">
       <ion-avatar>
@@ -29,13 +29,13 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col sizeLg="8" *ngIf="!this.equipmentInfoStore.loading">
+      <ion-col sizeLg="8" *ngIf="!equipmentInfoStore.loading">
         <form #f="ngForm">
-          <ion-item *ngIf="!this.equipmentInfoStore.equipments.length">
+          <ion-item *ngIf="!equipmentInfoStore.equipments.length">
             <ion-label>Nenhum aparelho cadastrado</ion-label>
           </ion-item>
           <ion-card
-            *ngFor="let equipment of this.equipmentInfoStore.equipments; let i = index"
+            *ngFor="let equipment of equipmentInfoStore.equipments; let i = index"
           >
             <ion-item id="cardTitle"
               ><ion-icon name="barbell-outline" slot="start"></ion-icon
@@ -46,16 +46,19 @@
                 <ion-label position="stacked">Aparelho:</ion-label>
                 <ion-input
                   type="text"
-                  placeholder="{{this.equipmentInfoStore.equipments[i].name}}"
+                  placeholder="{{equipmentInfoStore.equipments[i].name}}"
                   name="equipmentName"
-                  [ngModel]="this.equipmentInfoStore.equipments[i].name"
+                  [(ngModel)]="equipmentInfoStore.equipments[i].name"
                   required
                 ></ion-input>
               </ion-item>
-              <ion-item>
+              <ion-item *ngIf="equipmentInfoStore.equipments[i].image.id">
                 <ion-img
-                  [src]="this.equipmentInfoStore.equipments[i].image.location"
+                  [src]="equipmentInfoStore.equipments[i].image.location"
                 ></ion-img>
+              </ion-item>
+              <ion-item *ngIf="!equipmentInfoStore.equipments[i].image.id">
+                Não há imagem para este aparelho.
               </ion-item>
             </div>
             <ion-item>
@@ -148,6 +151,7 @@
                   name="file"
                   accept="image/*"
                   style="display: none"
+                  required
                   id="arquivo" />
                 <ion-button
                   slot="end"
@@ -166,7 +170,7 @@
                   fill="clear"
                   color="success"
                   (click)="onCreate(f)"
-                  [disabled]="!f.valid"
+                  [disabled]="!f.valid || !isEnable"
                 >
                   <ion-icon name="checkmark-done-outline"></ion-icon>
                 </ion-button>

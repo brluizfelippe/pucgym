@@ -9,6 +9,7 @@ import { EquipmentInfo } from '../classes/equipment-info';
 import { Link } from '../classes/link';
 import { Video } from '../classes/video';
 import { AuthService } from './auth.service';
+import { VideoService } from './video.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,15 +23,24 @@ export class EquipmentService {
   constructor(
     public http: HttpClient,
     public authService: AuthService,
+    public videoService: VideoService,
     public alertCtrl: AlertController,
     public router: Router
   ) {}
   private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'ok',
+          role: 'confirm',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
     alert.present();
   }
@@ -51,6 +61,10 @@ export class EquipmentService {
 
   setPropertyListener() {
     return this.equipmentInfoStream.asObservable();
+  }
+
+  get equipmentInfo(): EquipmentInfo {
+    return this.equipmentInfoStore;
   }
 
   getProperty() {
@@ -109,17 +123,7 @@ export class EquipmentService {
           this.equipmentInfoStream.next(this.equipmentInfoStore);
         },
         error: async (err) => {
-          const alert = await this.alertCtrl.create({
-            header: 'Busca de equipmamentos falhou!',
-            subHeader: 'se o problema persistir, contacte o desenvolvedor',
-            message: err.status === 401 ? 'Login expirado!' : err.status,
-            buttons: ['OK'],
-          });
-          //Se não for erro de autenticação, será exibido no alerta, porém
-          //sem desviar para página de login.
-          err.status === 401 ? this.redirectOnUnhautorized() : (() => {})();
-
-          alert.present();
+          this.handleError(err, 'Busca de equipamentos falhou');
         },
         complete: () => {
           console.log('getEquipments complete!');
@@ -154,50 +158,37 @@ export class EquipmentService {
           //[array(),{}] -> An array with an array inside.
           // Erro no MySQL
           if (Array.isArray(response)) {
-            const alert = await this.alertCtrl.create({
-              header: 'Cadastro de equipamento falhou!',
-              subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-              message: JSON.stringify(response[0]),
-              buttons: ['OK'],
-            });
-
-            alert.present();
+            this.showAlert(
+              'Falha no cadastro de equipamento',
+              '',
+              JSON.stringify(response[0])
+            );
           } else {
             // Erro no AWS S3 =>
             if (response.hasOwnProperty('code')) {
-              const alert = await this.alertCtrl.create({
-                header: 'Cadastro de video falhou!',
-                subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-                message: JSON.stringify(response),
-                buttons: ['OK'],
-              });
-
-              alert.present();
+              this.showAlert(
+                'Falha ao salvar arquivo',
+                '',
+                JSON.stringify(response)
+              );
             } else {
-              const alert = await this.alertCtrl.create({
-                message: 'Equipamento cadastrado com sucesso!',
-                buttons: ['OK'],
-              });
-
-              alert.present();
-              //Esta função irá disparar a atualização do observable
-              this.getEquipments();
+              this.showAlert(
+                'Sucesso',
+                '',
+                'Equipamento cadastrado com sucesso'
+              );
             }
           }
         },
         error: async (err) => {
-          const alert = await this.alertCtrl.create({
-            header: 'Cadastro de equipamento falhou!',
-            subHeader: 'Se o problema persistir, contacte o desenvolvedor.',
-            message: err.status === 401 ? 'Login expirado!' : err.status,
-            buttons: ['OK'],
-          });
+          this.handleError(err, 'Falha no cadastro de aparelho');
 
-          alert.present();
           this.redirectOnUnhautorized();
         },
         complete: () => {
           console.log('onCreateEquipment complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getEquipments();
         },
       });
   }
@@ -231,50 +222,31 @@ export class EquipmentService {
           //[array(),{}] -> An array with an array inside.
           // Erro no MySQL
           if (Array.isArray(response)) {
-            const alert = await this.alertCtrl.create({
-              header: 'Atualização de equipamento falhou!',
-              subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-              message: JSON.stringify(response[0]),
-              buttons: ['OK'],
-            });
-
-            alert.present();
+            this.showAlert(
+              'Falha na atualização de aparelho',
+              '',
+              JSON.stringify(response[0])
+            );
           } else {
             // Erro no AWS S3 =>
             if (response.hasOwnProperty('code')) {
-              const alert = await this.alertCtrl.create({
-                header: 'Atualização de equipamento falhou!',
-                subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-                message: JSON.stringify(response),
-                buttons: ['OK'],
-              });
-
-              alert.present();
+              this.showAlert(
+                'Falha na atualização de aparelho',
+                '',
+                JSON.stringify(response)
+              );
             } else {
-              const alert = await this.alertCtrl.create({
-                message: 'Equipamento atualzado com sucesso!',
-                buttons: ['OK'],
-              });
-
-              alert.present();
-              //Esta função irá disparar a atualização do observable
-              this.getEquipments();
+              this.showAlert('Sucesso', '', 'Aparelho atualizado com sucesso');
             }
           }
         },
         error: async (err) => {
-          const alert = await this.alertCtrl.create({
-            header: 'Atualização de equipamento falhou!',
-            subHeader: 'Se o problema persistir, contacte o desenvolvedor.',
-            message: err.status === 401 ? 'Login expirado!' : err.status,
-            buttons: ['OK'],
-          });
-
-          alert.present();
-          this.redirectOnUnhautorized();
+          this.handleError(err, 'Falha na atualização de aparelho');
         },
         complete: () => {
           console.log('onUpdateEquipment complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getEquipments();
         },
       });
   }
@@ -283,7 +255,9 @@ export class EquipmentService {
     let options = new HttpParams();
     options = options
       .append('userId', this.authService.authInfo.userId)
-      .append('id', this.equipmentInfoStore.equipmentSelected.id);
+      .append('id', this.equipmentInfoStore.equipmentSelected.id)
+      .append('bucket', this.videoService.videoInfo.videoSelected.bucket)
+      .append('videoKey', this.videoService.videoInfo.videoSelected.key);
 
     this.http
       .delete(
@@ -299,52 +273,31 @@ export class EquipmentService {
         next: async (response) => {
           // Erro no MySQL
           if (Array.isArray(response)) {
-            const alert = await this.alertCtrl.create({
-              header: 'Remoção de equipamento falhou!',
-              subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-              message: JSON.stringify(response[0]),
-              buttons: ['OK'],
-            });
-
-            alert.present();
+            this.showAlert(
+              'Falha na exclusão de aparelho',
+              '',
+              JSON.stringify(response[0])
+            );
           } else {
             // Erro no AWS S3 =>
             if (response.hasOwnProperty('code')) {
-              const alert = await this.alertCtrl.create({
-                header: 'Remoção de equipamento falhou!',
-                subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-                message: JSON.stringify(response),
-                buttons: ['OK'],
-              });
-
-              alert.present();
+              this.showAlert(
+                'Falha na exclusão de aparelho',
+                '',
+                JSON.stringify(response)
+              );
             } else {
-              const alert = await this.alertCtrl.create({
-                message: 'Equipamento removido com sucesso!',
-                buttons: ['OK'],
-              });
-
-              alert.present();
-              //Esta função irá disparar a atualização do observable
-              this.getEquipments();
+              this.showAlert('Sucesso', '', 'Aparelho removido com sucesso');
             }
           }
         },
         error: async (err) => {
-          const alert = await this.alertCtrl.create({
-            header: 'Remoção de equipamento falhou!',
-            subHeader: 'Se o problema persistir, contacte o desenvolvedor.',
-            message: err.status === 401 ? 'Login expirado!' : err.status,
-            buttons: ['OK'],
-          });
-          //Se não for erro de autenticação, será exibido no alerta, porém
-          //sem desviar para página de login.
-          err.status === 401 ? this.redirectOnUnhautorized() : (() => {})();
-
-          alert.present();
+          this.handleError(err, 'Falha na exclusão de aparelho');
         },
         complete: () => {
           console.log('onDeleteEquipment complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getEquipments();
         },
       });
   }

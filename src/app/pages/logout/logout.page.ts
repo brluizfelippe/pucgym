@@ -15,7 +15,23 @@ export class LogoutPage implements OnInit {
     public router: Router,
     public authService: AuthService
   ) {}
-
+  private async showAlert(header: string, subHeader: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header,
+      subHeader,
+      message,
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
+    });
+    alert.present();
+  }
   ngOnInit() {
     GoogleAuth.initialize();
   }
@@ -24,23 +40,13 @@ export class LogoutPage implements OnInit {
     GoogleAuth.signOut()
       .then(async (data) => {
         this.authService.onUserLogout();
-        const alert = await this.alertCtrl.create({
-          header: 'Logout',
-          message: 'usuário desconectado com sucesso.',
-          buttons: ['OK'],
-        });
-        alert.present();
+        this.showAlert('Logout', '', 'Usuário desconectado com sucesso');
+
         this.authService.redirectOnUnauthorized();
       })
       .catch(async (error) => {
         console.log('error on sigin method: ', error);
-        const alert = await this.alertCtrl.create({
-          header: 'Logout Falhou!',
-
-          message: error.error,
-          buttons: ['OK'],
-        });
-        alert.present();
+        this.showAlert('Falha no logout', '', error.error);
       });
   }
 }

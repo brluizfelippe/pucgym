@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Device, DeviceInfo } from '@capacitor/device';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
@@ -15,6 +16,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  emailForm: FormGroup;
   authInfoStore = new Auth();
   userInfoStore = new UserInfo();
   userSub = new Subscription();
@@ -26,7 +28,11 @@ export class RegisterPage implements OnInit {
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
     public router: Router
-  ) {}
+  ) {
+    this.emailForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+    });
+  }
 
   async ionViewWillEnter() {
     try {

@@ -8,9 +8,7 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Auth } from 'src/app/classes/auth';
-import { UserInfo } from 'src/app/classes/user-info';
 import { AuthService } from 'src/app/services/auth.service';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +31,23 @@ export class LoginPage implements OnInit {
     public loadingCtrl: LoadingController,
     public router: Router
   ) {}
+  private async showAlert(header: string, subHeader: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header,
+      subHeader,
+      message,
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
+    });
+    alert.present();
+  }
   ngOnDestroy() {
     this.authSub.unsubscribe();
   }
@@ -56,14 +71,13 @@ export class LoginPage implements OnInit {
         console.log(authData);
         this.authInfoStore.update(authData);
         if (this.authInfoStore.error) {
-          const alert = await this.alertCtrl.create({
-            header: 'Login Falhou!',
+          this.showAlert(
+            'Falha no login',
+            '',
+            this.authInfoStore.error.error.error
+          );
 
-            message: this.authInfoStore.error.error.error,
-            buttons: ['OK'],
-          });
           this.loadingCtrl.dismiss();
-          alert.present();
         } else {
           setTimeout(() => {
             this.loadingCtrl.dismiss();
@@ -72,15 +86,11 @@ export class LoginPage implements OnInit {
         }
       },
       async (err) => {
-        const alert = await this.alertCtrl.create({
-          header: 'Login Falhou!',
-          subHeader:
-            'Certifique-se de que informou o email e senha cadastrados.',
-          message: err.statusText,
-          buttons: ['OK'],
-        });
-
-        alert.present();
+        this.showAlert(
+          'Falha no login',
+          'Certifique-se de que informou o email e senha corretos',
+          err.statusText
+        );
       }
     );
   }
@@ -130,13 +140,7 @@ export class LoginPage implements OnInit {
       })
       .catch(async (error) => {
         console.log('error on sigin method: ', error);
-        const alert = await this.alertCtrl.create({
-          header: 'Login Falhou!',
-
-          message: error.error,
-          buttons: ['OK'],
-        });
-        alert.present();
+        this.showAlert('Falha no login', '', error.error);
       });
   }
 }

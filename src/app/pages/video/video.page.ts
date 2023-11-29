@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
@@ -18,50 +18,53 @@ import { VideoService } from 'src/app/services/video.service';
 export class VideoPage implements OnInit, OnDestroy {
   authInfoStore = new Auth();
   videoInfoStore = new VideoInfo();
-  private authSub = new Subscription();
-  private videoSub = new Subscription();
-  editItem!: boolean;
-  newItem!: boolean;
-  selectedIndex!: number;
-  isEnable!: boolean;
-  file!: File;
+  editItem = false;
+  newItem = false;
+  selectedIndex = -1;
+  isEnable = false;
+  file: File = new File([], '');
+  private subscriptions = new Subscription();
+
   constructor(
     public authService: AuthService,
     public videoService: VideoService,
     public router: Router,
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-    public alertController: AlertController
-  ) {
-    this.platform.backButton.subscribeWithPriority(-1, () => {
-      if (!this.routerOutlet.canGoBack()) {
-        App.exitApp();
-      }
-    });
-  }
+    public alertCtrl: AlertController
+  ) {}
 
   ngOnInit() {
-    this.editItem = false;
-    this.newItem = false;
-    this.isEnable = false;
-    this.authSub = this.authService.authInfoListener().subscribe((data) => {
-      this.authInfoStore.update(data);
-    });
+    this.initializeSubscriptions();
+  }
+
+  private initializeSubscriptions(): void {
+    this.subscriptions.add(
+      this.platform.backButton.subscribeWithPriority(-1, () => {
+        if (!this.routerOutlet.canGoBack()) {
+          App.exitApp();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.authService.authInfoListener().subscribe((data) => {
+        this.authInfoStore.update(data);
+      })
+    );
     this.authInfoStore.update(this.authService.authInfo);
 
-    this.videoSub = this.videoService
-      .setPropertyListener()
-      .subscribe((videoData) => {
-        console.log(videoData);
+    this.subscriptions.add(
+      this.videoService.setPropertyListener().subscribe((videoData) => {
         this.videoInfoStore.update(videoData);
-        console.log(this.videoInfoStore);
-      });
+      })
+    );
   }
 
   ionViewWillEnter() {
-    !this.authInfoStore.isLoggedIn
-      ? this.authService.redirectOnUnauthorized()
-      : this.videoService.getVideos();
+    this.authInfoStore.isLoggedIn
+      ? this.videoService.getVideos()
+      : this.authService.redirectOnUnauthorized();
   }
 
   onSelecionaArquivo() {
@@ -80,32 +83,35 @@ export class VideoPage implements OnInit, OnDestroy {
   }
 
   async onDelete(video: Video) {
-    this.videoService.onVideoSelected(video);
-
-    const alert = await this.alertController.create({
+    const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
-      header: 'ATENÇÃO !',
+      header: 'Confirmação e exclusão',
+      subHeader: '',
       message:
-        'Você tem certeza que deseja excluir o vídeo ' +
+        'Confirma a exclusão do vídeo ' +
         this.videoInfoStore.videoSelected.originalname +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {},
+          cssClass: 'alert-button-cancel',
+          handler: () => {},
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
           handler: () => {
+            this.videoInfoStore.updateLoading(true);
+            this.videoService.onVideoSelected(video);
             this.videoService.onDeleteVideo();
           },
         },
       ],
     });
-
     await alert.present();
+
     this.editItem = false;
     this.selectedIndex = -1;
   }
@@ -129,12 +135,43 @@ export class VideoPage implements OnInit, OnDestroy {
   }
 
   onCreateFile() {
+    this.videoInfoStore.updateLoading(true);
     this.videoService.onCreateVideo(this.file);
     this.isEnable = false;
     this.newItem = false;
   }
+  private async showAlert(
+    header: string,
+    subHeader: string,
+    message: string,
+    callback: any
+  ): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header,
+      subHeader,
+      message,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'alert-button-cancel',
+          handler: () => {},
+        },
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            callback;
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
   ngOnDestroy() {
-    this.authSub.unsubscribe();
-    this.videoSub.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }

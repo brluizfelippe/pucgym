@@ -24,7 +24,7 @@ module.exports.getVideo = function (req, res) {
 };
 
 module.exports.createFile = function (req, res) {
-  console.log("este é o request :" + JSON.stringify(req.body));
+  console.log("este é o request :" + JSON.stringify(req.file));
 
   var fieldname = req.file.fieldname;
   var originalname = req.file.originalname;
@@ -80,22 +80,28 @@ module.exports.createFile = function (req, res) {
   let sql = "call cadastraVideo(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 };
 
-module.exports.deleteVideo = function (req, res) {
+module.exports.deleteVideo = function (req, res, next) {
   var videoKey = req.params.id;
   var intIdUser = req.query.userId;
 
   const con = mysql.createConnection(keys);
-  console.log(keys);
+
   con.connect(function (err) {
     if (err) throw err;
     console.log("Connected!");
     con.query(sql, [videoKey, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
-        // throw error;
+        console.log("Gerou este erro: ", error);
       }
-      console.log(result);
-      res.json(result);
+
+      Array.isArray(result)
+        ? (() => {
+            res.json(result);
+          })()
+        : (() => {
+            next();
+          })();
 
       con.end(function (err) {
         if (err) throw err;

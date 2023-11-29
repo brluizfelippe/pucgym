@@ -19,6 +19,7 @@ export class HistoryComponent implements OnInit {
   @ViewChild('chart', { static: true })
   private chartContainer!: ElementRef;
   @Input() idExercise: any;
+
   private chart: am4charts.XYChart | undefined;
   authInfoStore = new Auth();
   historyInfoStore = new HistoryInfo();
@@ -75,6 +76,7 @@ export class HistoryComponent implements OnInit {
     // Add scrollbar
     let scrollbarX = new am4charts.XYChartScrollbar();
     scrollbarX.series.push(series);
+    scrollbarX.height = 5;
     this.chart.scrollbarX = scrollbarX;
   }
 

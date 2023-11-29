@@ -14,9 +14,14 @@ var ctrlProfile = require("../controllers/profile.controllers");
 var ctrlStp = require("../controllers/setup.controllers");
 var ctrlPymt = require("../controllers/payment.controllers");
 var ctrlHsty = require("../controllers/history.controllers");
-var AWS = require("@aws-sdk/client-s3");
+var AWS = require("aws-sdk");
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
-const S3 = new AWS.S3Client();
+const S3 = new AWS.S3();
 //
 //##### Autenticacao ####
 //
@@ -72,7 +77,25 @@ router
   .post(ctrlUsers.authenticate, ctrlEq.createEquipment);
 router
   .route("/equipments/:id")
-  .delete(ctrlUsers.authenticate, ctrlEq.deleteEquipment);
+  .delete(ctrlUsers.authenticate, ctrlEq.deleteEquipment, function (req, res) {
+    console.log(req.query);
+    S3.deleteObject(
+      {
+        Bucket: req.query.bucket,
+        Key: req.query.videoKey,
+      },
+      function (err, data) {
+        console.log("cheguei aqui....");
+        if (err) {
+          console.log("Error", err);
+          res.json(err);
+        } else {
+          console.log("File deleted successfully", data);
+          res.json(data);
+        }
+      }
+    );
+  });
 //
 //##### Equipamentos ####
 //
@@ -153,9 +176,9 @@ router.route("/videos").post(
   ctrlVideo.createFile
 );
 
-router.route("/videos/:id").delete(
-  ctrlUsers.authenticate,
-  function (req, res, next) {
+router
+  .route("/videos/:id")
+  .delete(ctrlUsers.authenticate, ctrlVideo.deleteVideo, function (req, res) {
     console.log(req.query);
     S3.deleteObject(
       {
@@ -163,15 +186,17 @@ router.route("/videos/:id").delete(
         Key: req.query.videoKey,
       },
       function (err, data) {
-        if (err) res.json(err);
-        else {
-          next();
+        console.log("cheguei aqui....");
+        if (err) {
+          console.log("Error", err);
+          res.json(err);
+        } else {
+          console.log("File deleted successfully", data);
+          res.json(data);
         }
       }
     );
-  },
-  ctrlVideo.deleteVideo
-);
+  });
 
 router.route("/videos").get(ctrlUsers.authenticate, ctrlVideo.getVideo);
 router

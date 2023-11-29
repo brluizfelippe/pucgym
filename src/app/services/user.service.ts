@@ -28,10 +28,18 @@ export class UserService {
   ) {}
   private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
     alert.present();
   }

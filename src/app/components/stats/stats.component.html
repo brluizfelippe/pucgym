@@ -1,0 +1,48 @@
+<!-- Add 2-items -->
+
+<ion-card
+  ><ion-item id="cardTitle" lines="none"
+    ><ion-icon name="rocket-outline" slot="start"></ion-icon>
+    Performance
+    <ion-spinner
+      slot="end"
+      name="dots"
+      *ngIf="this.historyInfoStore.loading"
+    ></ion-spinner
+  ></ion-item>
+  <ion-row>
+    <ion-col size="12" sizeMd="3">
+      <ion-item lines="full"
+        ><ion-button (click)="loadData('sum')" fill="clear" size="small"
+          ><ion-icon name="bar-chart-outline"></ion-icon></ion-button
+        >Acrescimo de carga</ion-item
+      >
+      <ion-item lines="full"
+        ><ion-button (click)="loadData('qty')" fill="clear" size="small"
+          ><ion-icon name="calendar-number-outline"></ion-icon></ion-button
+        >Frequência</ion-item
+      >
+      <ion-item lines="full"
+        ><ion-button (click)="loadData('min')" fill="clear" size="small"
+          ><ion-icon name="trending-down-outline"></ion-icon></ion-button
+        >Menor carga</ion-item
+      >
+      <ion-item lines="full"
+        ><ion-button (click)="loadData('max')" fill="clear" size="small"
+          ><ion-icon name="trending-up-outline"></ion-icon></ion-button
+        >Maior carga</ion-item
+      >
+      <ion-item lines="full"
+        ><ion-button (click)="loadData('mean')" fill="clear" size="small"
+          ><ion-icon name="analytics-outline"></ion-icon></ion-button
+        >Carga Média</ion-item
+      ><ion-item lines="full"
+        ><ion-button (click)="export()" fill="clear" size="small"
+          ><ion-icon name="download-outline" slot="start"></ion-icon
+        ></ion-button>
+        Exportar</ion-item
+      ></ion-col
+    ><ion-col size="12" sizeMd="9"> <div id="my_dataviz"></div></ion-col>
+  </ion-row>
+</ion-card>
+<!-- Create a div where the graph will take place -->

@@ -34,6 +34,7 @@ export class HomePage implements OnInit {
   exerciseInfoStore = new ExerciseInfo();
   setupInfoStore = new SetupInfo();
   historyInfoStore = new HistoryInfo();
+
   private subs = new SubSink();
 
   editItem: boolean = false;
@@ -46,7 +47,11 @@ export class HomePage implements OnInit {
   showAddExercise!: boolean;
   showAddExerciseForNewTraining!: boolean;
   idExercise!: number;
+  reportType1!: string;
+  reportType2!: string;
   isToastOpen: boolean = false;
+  showStats: boolean = false;
+
   constructor(
     public authService: AuthService,
     public programService: ProgramService,
@@ -83,6 +88,7 @@ export class HomePage implements OnInit {
     this.showExercise = false;
     this.trainingComplete = false;
     this.isToastOpen = false;
+    this.showStats = false;
   }
 
   private initializeSubscriptions(): void {
@@ -191,38 +197,6 @@ export class HomePage implements OnInit {
     this.trainingSelectedIndex = -1;
   }
 
-  async onDelete(training: Training) {
-    this.trainingInfoStore.updateLoading(true);
-    this.trainingService.onTrainingSelected(training);
-
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'ATENÇÃO !',
-      message:
-        'Você tem certeza que deseja excluir o treino ' +
-        this.trainingInfoStore.trainingSelected.name +
-        ' ?',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {},
-        },
-        {
-          text: 'CONFIRMAR',
-          handler: () => {
-            this.trainingService.onDeleteTraining();
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-    this.editItem = false;
-    this.trainingSelectedIndex = -1;
-  }
-
   onReturn() {
     this.editItem = false;
     this.newItem = false;
@@ -283,20 +257,21 @@ export class HomePage implements OnInit {
   async onConfirmFinishExercise() {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'ATENÇÃO !',
+      header: 'Confirmação de encerramento',
       message:
         'Concluir exercício ' +
         this.exerciseInfoStore.exerciseSelected.name +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'alert-button-cancel',
           handler: (blah) => {},
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          cssClass: 'alert-button-confirm',
           handler: () => {
             this.onFinishExercise();
             this.setOpen(this.trainingComplete);
@@ -359,6 +334,10 @@ export class HomePage implements OnInit {
     console.log(`Dismissed with role: ${role}`);
   }
   //########### Toast #################
+
+  showStatsCard(value: boolean) {
+    this.showStats = value;
+  }
 
   ngOnDestroy() {
     this.subs.unsubscribe();

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { Equipment } from '../classes/equipment';
 import { Exercise } from '../classes/exercise';
@@ -29,10 +29,18 @@ export class ExerciseService {
   ) {}
   private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
     alert.present();
   }
@@ -204,8 +212,6 @@ export class ExerciseService {
               );
             } else {
               this.showAlert('', '', 'Exercício cadastrado com sucesso!');
-              //Esta função irá disparar a atualização do observable
-              this.getExercises();
             }
           }
         },
@@ -214,6 +220,8 @@ export class ExerciseService {
         },
         complete: () => {
           console.log('onCreateExercise complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getExercises();
         },
       });
   }
@@ -273,8 +281,6 @@ export class ExerciseService {
               );
             } else {
               this.showAlert('', '', 'Exercício atualzado com sucesso!');
-              //Esta função irá disparar a atualização do observable
-              this.getExercises();
             }
           }
         },
@@ -283,6 +289,8 @@ export class ExerciseService {
         },
         complete: () => {
           console.log('onUpdateExercise complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getExercises();
         },
       });
   }
@@ -307,52 +315,31 @@ export class ExerciseService {
         next: async (response) => {
           // Erro no MySQL
           if (Array.isArray(response)) {
-            const alert = await this.alertCtrl.create({
-              header: 'Remoção de exercício falhou!',
-              subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-              message: JSON.stringify(response[0]),
-              buttons: ['OK'],
-            });
-
-            alert.present();
+            this.showAlert(
+              'Falha na exclusão de exercício',
+              '',
+              JSON.stringify(response[0])
+            );
           } else {
             // Erro no AWS S3 =>
             if (response.hasOwnProperty('code')) {
-              const alert = await this.alertCtrl.create({
-                header: 'Remoção de exercício falhou!',
-                subHeader: 'Se o problema persistir, contacte o desenvolvedor',
-                message: JSON.stringify(response),
-                buttons: ['OK'],
-              });
-
-              alert.present();
+              this.showAlert(
+                'Falha na exclusão de arquivo',
+                '',
+                JSON.stringify(response)
+              );
             } else {
-              const alert = await this.alertCtrl.create({
-                message: 'Exercício removido com sucesso!',
-                buttons: ['OK'],
-              });
-
-              alert.present();
-              //Esta função irá disparar a atualização do observable
-              this.getExercises();
+              this.showAlert('Sucesso', '', 'Exercício removido com sucesso');
             }
           }
         },
         error: async (err) => {
-          const alert = await this.alertCtrl.create({
-            header: 'Remoção de exercícios falhou!',
-            subHeader: 'Se o problema persistir, contacte o desenvolvedor.',
-            message: err.status === 401 ? 'Login expirado!' : err.status,
-            buttons: ['OK'],
-          });
-          //Se não for erro de autenticação, será exibido no alerta, porém
-          //sem desviar para página de login.
-          err.status === 401 ? this.redirectOnUnhautorized() : (() => {})();
-
-          alert.present();
+          this.handleError(err, 'Falha na exclusão de exercício');
         },
         complete: () => {
           console.log('onDeleteExercise complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getExercises();
         },
       });
   }

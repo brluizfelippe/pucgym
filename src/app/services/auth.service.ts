@@ -23,18 +23,22 @@ export class AuthService {
     private alertCtrl: AlertController
   ) {}
 
-  private async showAlert(
-    header: string,
-    subHeader: string,
-    message: string
-  ): Promise<void> {
+  private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
-    await alert.present();
+    alert.present();
   }
 
   private handleError(err: any, customMessage: string): void {

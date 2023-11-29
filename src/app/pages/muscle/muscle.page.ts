@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
@@ -15,14 +15,14 @@ import { MuscleService } from 'src/app/services/muscle.service';
   templateUrl: './muscle.page.html',
   styleUrls: ['./muscle.page.scss'],
 })
-export class MusclePage implements OnInit {
+export class MusclePage implements OnInit, OnDestroy {
   authInfoStore = new Auth();
   muscleInfoStore = new MuscleInfo();
-  private authSub = new Subscription();
-  private muscleSub = new Subscription();
-  editItem!: boolean;
-  newItem!: boolean;
-  selectedIndex!: number;
+  private subscriptions = new Subscription();
+  editItem = false;
+  newItem = false;
+  selectedIndex = -1;
+
   constructor(
     public authService: AuthService,
     public muscleService: MuscleService,
@@ -30,35 +30,40 @@ export class MusclePage implements OnInit {
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
     public alertController: AlertController
-  ) {
-    this.platform.backButton.subscribeWithPriority(-1, () => {
-      if (!this.routerOutlet.canGoBack()) {
-        App.exitApp();
-      }
-    });
-  }
+  ) {}
 
   ngOnInit() {
-    this.editItem = false;
-    this.newItem = false;
-    this.authSub = this.authService.authInfoListener().subscribe((data) => {
-      this.authInfoStore.update(data);
-    });
+    this.initializeSubscriptions();
+  }
+
+  private initializeSubscriptions(): void {
+    this.subscriptions.add(
+      this.platform.backButton.subscribeWithPriority(-1, () => {
+        if (!this.routerOutlet.canGoBack()) {
+          App.exitApp();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.authService.authInfoListener().subscribe((data) => {
+        this.authInfoStore.update(data);
+      })
+    );
     this.authInfoStore.update(this.authService.authInfo);
 
-    this.muscleSub = this.muscleService
-      .setPropertyListener()
-      .subscribe((muscleData) => {
+    this.subscriptions.add(
+      this.muscleService.setPropertyListener().subscribe((muscleData) => {
         this.muscleInfoStore.update(muscleData);
-      });
+      })
+    );
   }
 
   ionViewWillEnter() {
-    !this.authInfoStore.isLoggedIn
-      ? this.authService.redirectOnUnauthorized()
-      : this.muscleService.getMuscles();
+    this.authInfoStore.isLoggedIn
+      ? this.muscleService.getMuscles()
+      : this.authService.redirectOnUnauthorized();
   }
-
   onEdit(index: number) {
     this.selectedIndex = index;
     this.editItem = true;
@@ -78,20 +83,21 @@ export class MusclePage implements OnInit {
 
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'ATENÇÃO !',
+      header: 'Confirmação de exclusão',
       message:
         'Você tem certeza que deseja excluir o grupo ' +
         this.muscleInfoStore.muscleSelected.name +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'alert-button-cancel',
           handler: (blah) => {},
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          cssClass: 'alert-button-confirm',
           handler: () => {
             this.muscleService.onDeleteMuscle();
           },
@@ -110,6 +116,7 @@ export class MusclePage implements OnInit {
     this.selectedIndex = -1;
   }
   onNew() {
+    this.muscleInfoStore.updateMuscleSelected(new Muscle());
     this.newItem = true;
   }
   onCreate(form: NgForm) {
@@ -120,7 +127,6 @@ export class MusclePage implements OnInit {
     this.newItem = false;
   }
   ngOnDestroy() {
-    this.authSub.unsubscribe();
-    this.muscleSub.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }

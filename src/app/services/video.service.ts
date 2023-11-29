@@ -26,10 +26,18 @@ export class VideoService {
   ) {}
   private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
     alert.present();
   }
@@ -78,6 +86,10 @@ export class VideoService {
     return this.videoInfoStream.asObservable();
   }
 
+  get videoInfo(): VideoInfo {
+    return this.videoInfoStore;
+  }
+
   getProperty() {
     return this.videoInfoStore;
   }
@@ -107,6 +119,7 @@ export class VideoService {
   }
 
   onVideoSelected(video: Video) {
+    this.videoInfoStore.updateLoading(true);
     this.videoInfoStore.updateVideoSelected(video);
     this.videoInfoStream.next(this.videoInfoStore);
   }
@@ -183,15 +196,12 @@ export class VideoService {
                   // Erro no AWS S3 =>
                   if (response.hasOwnProperty('code')) {
                     this.showAlert(
-                      'Cadastro de video falhou!',
+                      'Cadastro de arquivo falhou!',
                       '',
                       JSON.stringify(response)
                     );
                   } else {
-                    this.showAlert('', '', 'Video cadastrado com sucesso!');
-
-                    //Esta função irá disparar a atualização do observable
-                    this.getVideos();
+                    this.showAlert('', '', 'Arquivo cadastrado com sucesso!');
                   }
                 }
               })()
@@ -200,10 +210,12 @@ export class VideoService {
               })();
         },
         error: async (err) => {
-          this.handleError(err, 'Cadastro de video falhou!');
+          this.handleError(err, 'Cadastro de arquivo falhou!');
         },
         complete: () => {
           console.info('video complete');
+          //Esta função irá disparar a atualização do observable
+          this.getVideos();
         },
       });
   }
@@ -244,9 +256,6 @@ export class VideoService {
               );
             } else {
               this.showAlert('', '', 'Arquivo removido com sucesso!');
-
-              //Esta função irá disparar a atualização do observable
-              this.getVideos();
             }
           }
         },
@@ -255,6 +264,8 @@ export class VideoService {
         },
         complete: () => {
           console.log('onDeleteVideo complete!');
+          //Esta função irá disparar a atualização do observable
+          this.getVideos();
         },
       });
   }

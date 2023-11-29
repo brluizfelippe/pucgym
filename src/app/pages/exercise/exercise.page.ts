@@ -29,11 +29,7 @@ export class ExercisePage implements OnInit {
   videoInfoStore = new VideoInfo();
   equipmentInfoStore = new EquipmentInfo();
   muscleInfoStore = new MuscleInfo();
-  private authSub = new Subscription();
-  private exerciseSub = new Subscription();
-  private videoSub = new Subscription();
-  private equipmentSub = new Subscription();
-  private muscleSub = new Subscription();
+
   editItem!: boolean;
   newItem!: boolean;
   exerciseIndex!: number;
@@ -41,6 +37,7 @@ export class ExercisePage implements OnInit {
   showExerciseDetail!: boolean;
   showAddEquipment!: boolean;
   showAddEquipmentForNewExercise!: boolean;
+  private subscriptions = new Subscription();
   constructor(
     public authService: AuthService,
     public exerciseService: ExerciseService,
@@ -50,7 +47,7 @@ export class ExercisePage implements OnInit {
     public router: Router,
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-    public alertController: AlertController
+    public alertCtrl: AlertController
   ) {
     this.platform.backButton.subscribeWithPriority(-1, () => {
       if (!this.routerOutlet.canGoBack()) {
@@ -65,34 +62,47 @@ export class ExercisePage implements OnInit {
     this.showExerciseDetail = false;
     this.showAddEquipment = false;
     this.showAddEquipmentForNewExercise = false;
-    this.authSub = this.authService.authInfoListener().subscribe((data) => {
-      this.authInfoStore.update(data);
-    });
+    this.initializeSubscriptions();
+  }
+
+  private initializeSubscriptions(): void {
+    this.subscriptions.add(
+      this.platform.backButton.subscribeWithPriority(-1, () => {
+        if (!this.routerOutlet.canGoBack()) {
+          App.exitApp();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.authService.authInfoListener().subscribe((data) => {
+        this.authInfoStore.update(data);
+      })
+    );
     this.authInfoStore.update(this.authService.authInfo);
 
-    this.exerciseSub = this.exerciseService
-      .setPropertyListener()
-      .subscribe((exerciseData) => {
+    this.subscriptions.add(
+      this.exerciseService.setPropertyListener().subscribe((exerciseData) => {
         this.exerciseInfoStore.update(exerciseData);
-      });
+      })
+    );
 
-    this.videoSub = this.videoService
-      .setPropertyListener()
-      .subscribe((videoData) => {
+    this.subscriptions.add(
+      this.videoService.setPropertyListener().subscribe((videoData) => {
         this.videoInfoStore.update(videoData);
-      });
+      })
+    );
 
-    this.equipmentSub = this.equipmentService
-      .setPropertyListener()
-      .subscribe((eqData) => {
-        this.equipmentInfoStore.update(eqData);
-      });
-
-    this.muscleSub = this.muscleService
-      .setPropertyListener()
-      .subscribe((muscleData) => {
+    this.subscriptions.add(
+      this.equipmentService.setPropertyListener().subscribe((equipmentData) => {
+        this.equipmentInfoStore.update(equipmentData);
+      })
+    );
+    this.subscriptions.add(
+      this.muscleService.setPropertyListener().subscribe((muscleData) => {
         this.muscleInfoStore.update(muscleData);
-      });
+      })
+    );
   }
 
   ionViewWillEnter() {
@@ -128,32 +138,35 @@ export class ExercisePage implements OnInit {
   }
 
   async onDelete(exercise: Exercise) {
+    this.exerciseService.onLoadingUpdate();
     this.exerciseService.onExerciseSelected(exercise);
-
-    const alert = await this.alertController.create({
+    const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'ATENÇÃO !',
       message:
         'Você tem certeza que deseja excluir o exercício ' +
         this.exerciseInfoStore.exerciseSelected.name +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {},
+          cssClass: 'alert-button-cancel',
+          handler: (blah) => {
+            this.exerciseService.getExercises();
+          },
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          cssClass: 'alert-button-confirm',
           handler: () => {
             this.exerciseService.onDeleteExercise();
           },
         },
       ],
     });
-
     await alert.present();
+
     this.editItem = false;
     this.exerciseSelectedIndex = -1;
   }
@@ -164,6 +177,7 @@ export class ExercisePage implements OnInit {
     this.exerciseSelectedIndex = -1;
   }
   onNew() {
+    this.exerciseInfoStore.updateExerciseSelected(new Exercise());
     this.newItem = true;
   }
   onCreate(form: NgForm) {
@@ -220,9 +234,6 @@ export class ExercisePage implements OnInit {
   }
   //#### Fim de métodos para adição de aparelho ao exercício ao exercício existente
   ngOnDestroy() {
-    this.authSub.unsubscribe();
-    this.exerciseSub.unsubscribe();
-    this.equipmentSub.unsubscribe();
-    this.muscleSub.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }

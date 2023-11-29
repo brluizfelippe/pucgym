@@ -8,7 +8,7 @@ module.exports = () => {
 
   switch (process.env.NODE_ENV) {
     case "production":
-      keys.database = process.env.DB_KEY_DATABASE_PROD;
+      keys.database = process.env.DB_KEY_DATABASE_DEV;
       break;
     default:
       keys.database = process.env.DB_KEY_DATABASE_DEV;

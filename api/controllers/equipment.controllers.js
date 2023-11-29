@@ -78,7 +78,7 @@ module.exports.updateEquipment = function (req, res) {
   let sql = "call atualizaEquipamento(?,?,?,?)";
 };
 
-module.exports.deleteEquipment = function (req, res) {
+module.exports.deleteEquipment = function (req, res, next) {
   var idEquipment = req.params.id;
   var intIdUser = req.query.userId;
 
@@ -86,12 +86,20 @@ module.exports.deleteEquipment = function (req, res) {
   con.connect(function (err) {
     if (err) throw err;
     console.log("Connected!");
+
+    let sql = "CALL excluiEquipamento(?,?)"; // Move the SQL declaration before its usage
+
     con.query(sql, [idEquipment, intIdUser], function (error, result) {
       if (error) {
-        res.json(error);
-        // throw error;
+        console.log("Gerou este erro: ", error);
+        // Consider adding 'res.json(error);' or another way to handle the error
+      } else {
+        if (Array.isArray(result)) {
+          res.json(result);
+        } else {
+          next();
+        }
       }
-      res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
@@ -99,5 +107,4 @@ module.exports.deleteEquipment = function (req, res) {
       });
     });
   });
-  let sql = "call excluiEquipamento(?,?)";
 };

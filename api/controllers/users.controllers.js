@@ -62,6 +62,7 @@ module.exports.login = function (req, res) {
               {
                 username: result[0][0].nome,
                 type: result[0][0].tipo,
+                userId: result[0][0].id,
               },
               "s3cr3t",
               {

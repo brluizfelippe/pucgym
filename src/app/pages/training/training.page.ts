@@ -37,7 +37,7 @@ export class TrainingPage implements OnInit {
     public router: Router,
     private platform: Platform,
     private routerOutlet: IonRouterOutlet,
-    public alertController: AlertController
+    public alertCtrl: AlertController
   ) {
     this.setupBackButtonHandler();
   }
@@ -70,6 +70,7 @@ export class TrainingPage implements OnInit {
         this.exerciseInfoStore.update(exerciseData);
       })
     );
+    this.authInfoStore.update(this.authService.authInfo);
   }
 
   ionViewWillEnter() {
@@ -103,30 +104,31 @@ export class TrainingPage implements OnInit {
 
   async onDelete(training: Training) {
     this.trainingService.onTrainingSelected(training);
-
-    const alert = await this.alertController.create({
+    const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class',
       header: 'ATENÇÃO !',
       message:
         'Você tem certeza que deseja excluir o treino ' +
         this.trainingInfoStore.trainingSelected.name +
-        ' ?',
+        '?',
       buttons: [
         {
-          text: 'CANCELAR',
+          text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {},
+          cssClass: 'alert-button-cancel',
+          handler: (blah) => {
+            this.trainingService.getTrainings();
+          },
         },
         {
-          text: 'CONFIRMAR',
+          text: 'Confirmar',
+          cssClass: 'alert-button-confirm',
           handler: () => {
             this.trainingService.onDeleteTraining();
           },
         },
       ],
     });
-
     await alert.present();
     this.editItem = false;
     this.trainingSelectedIndex = -1;
@@ -138,6 +140,7 @@ export class TrainingPage implements OnInit {
     this.trainingSelectedIndex = -1;
   }
   onNew() {
+    this.trainingInfoStore.updateTrainingSelected(new Training());
     this.newItem = true;
   }
   onCreate(form: NgForm) {

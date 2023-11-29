@@ -9,7 +9,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" size-md="5" class="colContent">
+      <ion-col size="12" sizeSm="8" sizeMd="6" sizeLg="4" class="colContent">
         <form #f="ngForm" (ngSubmit)="onSubmit(f)">
           <ion-card>
             <ion-card-header
@@ -22,6 +22,8 @@
                 type="email"
                 name="userEmail"
                 ngModel
+                #email="ngModel"
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 required
               ></ion-input>
             </ion-item>
@@ -31,6 +33,7 @@
                 type="password"
                 name="userPassword"
                 ngModel
+                #password="ngModel"
                 required
               ></ion-input>
             </ion-item>
@@ -39,7 +42,7 @@
               color="dark"
               ion-button
               type="submit"
-              [disabled]="!f.valid"
+              [disabled]="!f.valid || email.errors?.['required'] || email.errors?.['pattern']"
               Expand="full"
               fill="solid"
               size="small"
@@ -61,6 +64,22 @@
               ><ion-icon name="logo-google" slot="start"></ion-icon>
               Acessar com google
             </ion-button>
+            <div
+              *ngIf="(email.invalid && (email.dirty || email.touched))||(password.invalid && (password.dirty || password.touched))"
+              class="alert"
+            >
+              <div *ngIf="password.errors?.['required']">Senha necessária.</div>
+              <div *ngIf="email.errors?.['required']">Email necessário.</div>
+              <div *ngIf="email.errors?.['pattern']">
+                Digite um email válido.
+              </div>
+              <div *ngIf="firstName.errors?.['required']">
+                Primeiro nome necessário.
+              </div>
+              <div *ngIf="lastName.errors?.['required']">
+                Último nome necessário.
+              </div>
+            </div>
           </ion-card>
         </form>
       </ion-col>

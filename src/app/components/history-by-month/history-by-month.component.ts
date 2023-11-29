@@ -29,6 +29,7 @@ export class HistoryByMonthComponent implements OnInit {
   @ViewChild('chart', { static: true })
   private chartContainer!: ElementRef;
   @Input() idExercise: any;
+  @Input() reportType: any;
   private chart: am4charts.XYChart | undefined;
   authInfoStore = new Auth();
   historyInfoStore = new HistoryInfo();
@@ -51,14 +52,20 @@ export class HistoryByMonthComponent implements OnInit {
 
   buildChart() {
     am4core.useTheme(am4themes_animated);
-    this.chart = am4core.create('chartdiv2', am4charts.XYChart);
+    this.chart = am4core.create(this.reportType, am4charts.XYChart);
 
     this.chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
     // Add data
-    this.chart.data = this.historyInfoStore.historyMonths.map((obj) => ({
-      month: obj.month,
-      qty: obj.qty,
-    }));
+    if (this.reportType === 'sum') {
+      this.chart.data = this.historyInfoStore.historyMonthsDif.map((obj) => ({
+        month: obj.month,
+        qty: obj.qty,
+      }));
+    } else
+      this.chart.data = this.historyInfoStore.historyMonthsQty.map((obj) => ({
+        month: obj.month,
+        qty: obj.qty,
+      }));
 
     let categoryAxis = this.chart.xAxes.push(new am4charts.CategoryAxis());
     categoryAxis.renderer.grid.template.location = 0;
@@ -68,7 +75,7 @@ export class HistoryByMonthComponent implements OnInit {
 
     let valueAxis = this.chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.min = 0;
-    valueAxis.max = 30;
+    valueAxis.max = 50;
     valueAxis.strictMinMax = true;
     valueAxis.renderer.minGridDistance = 30;
     // axis break
@@ -137,7 +144,7 @@ export class HistoryByMonthComponent implements OnInit {
 
   private loadData(): void {
     this.authInfoStore.update(this.authService.authInfo);
-    this.historyService.getHistoriesMonth(this.idExercise);
+    this.historyService.getHistoriesMonth(this.idExercise, this.reportType);
   }
 
   ngOnDestroy() {

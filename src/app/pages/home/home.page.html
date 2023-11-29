@@ -110,6 +110,7 @@
                   fill="clear"
                   color="light"
                   float="right"
+                  title="Encerrar exercício"
                   (click)="onConfirmFinishExercise();"
                   ><ion-icon name="checkmark-done-outline"></ion-icon
                 ></ion-button>
@@ -119,40 +120,63 @@
                   fill="clear"
                   color="light"
                   float="right"
+                  title="Selecionar treino"
                   (click)="resetStates();"
-                  ><ion-icon name="pulse-outline"></ion-icon></ion-button
+                  ><ion-icon name="pulse-outline"></ion-icon
+                ></ion-button>
+                <ion-button
+                  *ngIf="showExercise && !showStats"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  float="right"
+                  title="Mostrar performance"
+                  (click)="showStatsCard(true);"
+                  ><ion-icon name="stats-chart-outline"></ion-icon></ion-button
+                ><ion-button
+                  *ngIf="showStats"
+                  size="small"
+                  fill="clear"
+                  color="light"
+                  float="right"
+                  title="Mostrar exercício"
+                  (click)="showStatsCard(false);"
+                  ><ion-icon name="fitness-outline"></ion-icon></ion-button
                 ><ion-spinner
                   slot="end"
                   name="dots"
                   *ngIf="this.setupInfoStore.loading"
                 ></ion-spinner></ion-item
               ><ng-container
-                *ngIf="exerciseInfoStore.exercises.length && showExercise"
+                *ngIf="exerciseInfoStore.exercises.length && showExercise "
               >
                 <form #f="ngForm">
-                  <ion-row class="ion-align-items-start">
-                    <ion-col size="12" size-sm="3" class="detail">
-                      <p>
-                        Grupo muscular: {{
-                        exerciseInfoStore.exercises[0].muscle.name | titlecase
-                        }}
-                      </p>
+                  <ion-row class="ion-align-items-start" *ngIf="!showStats">
+                    <ion-col size="12" size-sm="5" class="detail">
+                      <ion-item lines="full" title="Grupo muscular"
+                        ><ion-icon name="body-outline" slot="start"></ion-icon>
+                        {{ exerciseInfoStore.exercises[0].muscle.name |
+                        titlecase }}
+                      </ion-item>
                       <ng-container
                         *ngFor="let equipment of exerciseInfoStore.exercises[0]?.equipments; let equipmentIndex = index"
-                        ><p>
-                          Aparelho {{ equipmentIndex + 1 }} : {{ equipment.name
-                          | titlecase }}
-                        </p>
-                        <p>
+                        ><ion-item
+                          ><ion-icon
+                            title="Aparelho"
+                            name="barbell-outline"
+                            slot="start"
+                          ></ion-icon
+                          >{{ equipment.name | titlecase }}
+                        </ion-item>
+                        <ion-item>
                           <ion-img
                             alt="Aparelho"
                             [src]="equipment.image"
                             height="350"
                           ></ion-img>
-                        </p>
+                        </ion-item>
                       </ng-container>
-                    </ion-col>
-                    <ion-col size="12" size-sm="2" class="detail">
+
                       <ng-container
                         *ngIf="!setupInfoStore.setups.length;else noSetupWarning"
                       >
@@ -164,13 +188,25 @@
                         ><ng-container
                           *ngFor="let setup of setupInfoStore.setups; let setupIndex = index"
                           ><form #mp>
-                            <p>
-                              Repetição {{ setupIndex + 1 }}: {{
-                              setup.repetition | titlecase }}
-                            </p>
-                            <p>
+                            <ion-item
+                              lines="full
+                            "
+                              ><ion-icon
+                                title="Repetições"
+                                name="refresh-circle-outline"
+                                slot="start"
+                              ></ion-icon>
+                              {{ setup.repetition === ''? 'Repetições não
+                              definidas': setup.repetition | titlecase }}
+                            </ion-item>
+                            <ion-item lines="full"
+                              ><ion-icon
+                                title="Ajuste do aparelho"
+                                name="build-outline"
+                                slot="start"
+                              ></ion-icon>
                               <ion-input
-                                label="Ajuste {{ setupIndex + 1 }}: "
+                                label="Ajuste: "
                                 labelPlacement="default"
                                 type="text"
                                 [name]="'set'+ (setupIndex+1)"
@@ -178,10 +214,15 @@
                                 (ionChange)="setupInfoStore.updateSetupSelected(setupInfoStore.setups[setupIndex])"
                                 required
                               ></ion-input>
-                            </p>
-                            <p>
+                            </ion-item>
+                            <ion-item lines="none"
+                              ><ion-icon
+                                title="Carga [Kg]"
+                                name="skull-outline"
+                                slot="start"
+                              ></ion-icon>
                               <ion-input
-                                label="Carga {{ setupIndex + 1 }}[Kg]: "
+                                label="Carga [Kg]: "
                                 labelPlacement="default"
                                 type="number"
                                 [name]="'load'+ (setupIndex+1)"
@@ -189,12 +230,11 @@
                                 (ionChange)="setupInfoStore.updateSetupSelected(setupInfoStore.setups[setupIndex])"
                                 required
                               ></ion-input>
-                            </p></form
+                            </ion-item></form
                         ></ng-container>
                       </ng-template> </ion-col
-                    ><ion-col size="12" size-sm="7" class="detail"
-                      ><p>Video tutorial:</p>
-                      <p>
+                    ><ion-col size="12" size-sm="7" class="detail">
+                      <ion-item>
                         <video
                           width="100%"
                           height="350"
@@ -207,35 +247,16 @@
                           />
                           Esse browser não suporta video
                         </video>
-                      </p>
+                      </ion-item>
                     </ion-col>
                   </ion-row>
 
                   <!-- Video Details -->
                 </form>
 
-                <ion-row>
-                  <ion-col size="12" size-md="6" class="colContent"
-                    ><ion-icon name="rocket-outline" slot="start"></ion-icon>
-                    Evoluçao de carga
-                    <ion-spinner
-                      slot="end"
-                      name="dots"
-                      *ngIf="this.historyInfoStore.loading"
-                    ></ion-spinner
-                    ><app-history [idExercise]="idExercise"></app-history>
-                  </ion-col>
-                  <ion-col size="12" size-md="6" class="colContent">
-                    <ion-icon name="rocket-outline" slot="start"></ion-icon>
-                    Resumo mensal
-                    <ion-spinner
-                      slot="end"
-                      name="dots"
-                      *ngIf="this.historyInfoStore.loading"
-                    ></ion-spinner
-                    ><app-history-by-month
-                      [idExercise]="idExercise"
-                    ></app-history-by-month>
+                <ion-row *ngIf="showStats">
+                  <ion-col size="12" class="colContent">
+                    <app-stats [idExercise]="idExercise"></app-stats>
                   </ion-col>
                 </ion-row>
               </ng-container>

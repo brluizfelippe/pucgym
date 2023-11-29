@@ -28,10 +28,18 @@ export class HistoryService {
   ) {}
   private async showAlert(header: string, subHeader: string, message: string) {
     const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
       header,
       subHeader,
       message,
-      buttons: ['OK'],
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'ok',
+          cssClass: 'alert-button-confirm',
+          handler: (blah) => {},
+        },
+      ],
     });
     alert.present();
   }
@@ -117,11 +125,12 @@ export class HistoryService {
 
   //###################
   //###################
-  async getHistoriesMonth(exerciseId: number) {
+  async getHistoriesMonth(exerciseId: number, reportType: string) {
     let options = new HttpParams();
     options = options
       .append('userId', this.authService.authInfo.userId)
-      .append('exerciseId', exerciseId);
+      .append('exerciseId', exerciseId)
+      .append('reportType', reportType);
 
     this.http
       .get(this.link.baseUrl(Capacitor.getPlatform()) + '/historiesbymonth', {
@@ -132,12 +141,12 @@ export class HistoryService {
         next: (response) => {
           Array.isArray(response)
             ? (() => {
-                this.historyInfoStore.updateHistoryMonth(
+                this.historyInfoStore.updateHistoryMonthQty(
                   this.formatIntoHistoryMonthType(response[0])
                 );
               })()
             : (() => {
-                this.historyInfoStore.updateHistoryMonth([]);
+                this.historyInfoStore.updateHistoryMonthQty([]);
               })(),
             this.historyInfoStore.updateLoading(false);
           this.historyInfoStream.next(this.historyInfoStore);
