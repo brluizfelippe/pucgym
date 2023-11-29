@@ -82,7 +82,7 @@ const routes: Routes = [
           import('../payment/payment.module').then((m) => m.PaymentPageModule),
       },
       {
-        path: 'sucess',
+        path: 'success',
         loadChildren: () =>
           import('../success/success.module').then((m) => m.SuccessPageModule),
       },
