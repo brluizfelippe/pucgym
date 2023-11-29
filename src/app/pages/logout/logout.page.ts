@@ -46,7 +46,6 @@ export class LogoutPage implements OnInit {
           this.authService.redirectOnUnauthorized();
         })
         .catch(async (error) => {
-          console.log('error on sigin method: ', error);
           this.showAlert('Falha no logout', '', error.error);
         });
     } else {

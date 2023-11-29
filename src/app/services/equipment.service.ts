@@ -305,7 +305,6 @@ export class EquipmentService {
   //###################
 
   formatIntoEquipmentType(info: any[]) {
-    console.log(info);
     const auxInfo: Equipment[] = [];
     info.forEach((element) => {
       const auxElement = new Equipment();

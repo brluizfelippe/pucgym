@@ -4,12 +4,9 @@ var mysql = require("mysql");
 var keys = require("../config/keys")();
 
 module.exports.register = function (req, res) {
-  console.log(req.body.userSelected);
   const con = mysql.createConnection(keys);
-  console.log(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [
@@ -22,13 +19,11 @@ module.exports.register = function (req, res) {
       ],
       function (error, result) {
         if (error) throw error;
-        console.log(result);
         res.json(result);
         //res.json("Usuário cadastrado com Sucesso!");
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -37,27 +32,20 @@ module.exports.register = function (req, res) {
 };
 
 module.exports.login = function (req, res) {
-  console.log(req.body);
   var email = req.body.userEmail;
   var senha = req.body.userPassword;
   try {
-    console.log("logging in user");
     const con = mysql.createConnection(keys);
-    console.log(keys);
     con.connect(function (err) {
       if (err) {
         res.json(err);
       }
-      console.log("Connected!");
       con.query(sql, [email], function (error, result) {
-        console.log("result[0]: ", result[0]);
         if (error) {
           res.json(error);
         }
         if (result[0].length > 0) {
-          //console.log(senha.trim(), result[0][0].senha.trim());
           if (bcrypt.compareSync(senha.trim(), result[0][0].senha.trim())) {
-            console.log("User found", result[0][0].nome);
             var token = jwt.sign(
               {
                 username: result[0][0].nome,
@@ -99,33 +87,25 @@ module.exports.login = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       });
     });
     let sql = "call buscaUsuario(?)";
-  } catch (error) {
-    console.log("error caught!!!!!!!!!", error);
-  }
+  } catch (error) {}
 };
 
 module.exports.loginWithGoogle = function (req, res) {
-  console.log(req.body);
   var email = req.body.userEmail;
   var googleId = req.body.googleId;
 
-  console.log("logging in user with google");
   const con = mysql.createConnection(keys);
 
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [email], function (error, result) {
-      console.log("result[0]: ", result[0]);
       if (error) throw error;
       if (result[0].length > 0) {
         if (googleId.trim() === result[0][0].googleId.trim()) {
-          console.log("User found", result[0][0].nome);
           var token = jwt.sign(
             {
               username: result[0][0].nome,
@@ -167,7 +147,6 @@ module.exports.loginWithGoogle = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -177,11 +156,9 @@ module.exports.loginWithGoogle = function (req, res) {
 module.exports.authenticate = function (req, res, next) {
   var headerExists = req.headers.authorization;
   if (headerExists) {
-    console.log(req.headers);
     var token = req.headers.authorization.split(" ")[1]; //--> Authorization Bearer xxx
     jwt.verify(token, "s3cr3t", function (error, decoded) {
       if (error) {
-        console.log(error);
         res.status(401).json("Unauthorized");
       } else {
         req.user = decoded.username;
@@ -198,18 +175,15 @@ module.exports.getUser = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -225,7 +199,6 @@ module.exports.updateUser = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [idUser, intIdProfile, intIdProgram, intIdUser],
@@ -238,7 +211,6 @@ module.exports.updateUser = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -253,7 +225,6 @@ module.exports.deleteUser = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idUser, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
@@ -263,7 +234,6 @@ module.exports.deleteUser = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

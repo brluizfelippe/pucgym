@@ -287,7 +287,6 @@ export class MuscleService {
   //###################
 
   formatIntoMuscleType(info: any[]) {
-    console.log(info);
     const auxInfo: Muscle[] = [];
     info.forEach((element) => {
       const auxElement = new Muscle();

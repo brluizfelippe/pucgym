@@ -78,19 +78,15 @@ router
 router
   .route("/equipments/:id")
   .delete(ctrlUsers.authenticate, ctrlEq.deleteEquipment, function (req, res) {
-    console.log(req.query);
     S3.deleteObject(
       {
         Bucket: req.query.bucket,
         Key: req.query.videoKey,
       },
       function (err, data) {
-        console.log("cheguei aqui....");
         if (err) {
-          console.log("Error", err);
           res.json(err);
         } else {
-          console.log("File deleted successfully", data);
           res.json(data);
         }
       }
@@ -163,7 +159,6 @@ router.route("/videos").post(
   ctrlUsers.authenticate,
   function (req, res, next) {
     multer(multerConfig).single("file")(req, res, function (err) {
-      console.log("passei aqui!");
       if (err) {
         // A Multer error occurred when uploading.
         res.json(err);
@@ -179,19 +174,15 @@ router.route("/videos").post(
 router
   .route("/videos/:id")
   .delete(ctrlUsers.authenticate, ctrlVideo.deleteVideo, function (req, res) {
-    console.log(req.query);
     S3.deleteObject(
       {
         Bucket: req.query.bucket,
         Key: req.query.videoKey,
       },
       function (err, data) {
-        console.log("cheguei aqui....");
         if (err) {
-          console.log("Error", err);
           res.json(err);
         } else {
-          console.log("File deleted successfully", data);
           res.json(data);
         }
       }

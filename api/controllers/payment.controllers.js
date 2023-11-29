@@ -46,7 +46,6 @@ const storeItems = new Map([
 ]);
 
 module.exports.checkout = async function (req, res) {
-  console.log("request received!: ", req.body);
   try {
     const session = await stripe.checkout.sessions.create({
       customer_email: req.body.bodyParams.userEmail,

@@ -63,7 +63,6 @@ export class AuthService {
   private handleUserInfo(userInfo: any): void {
     if (userInfo.success) {
       const decodedToken = this.jwtHelper.decodeToken(userInfo.token);
-      console.log(decodedToken);
 
       const auxAuth = new Auth()
         .setEmail(userInfo.email)
@@ -73,7 +72,6 @@ export class AuthService {
         .setImageUrl(decodedToken.imageUrl)
         .setIdProgram(userInfo.idProgram);
 
-      console.log(userInfo, auxAuth);
       this.authInfoStore.update(auxAuth);
     } else {
       this.resetProperties();
@@ -110,13 +108,11 @@ export class AuthService {
   }
 
   async onUserLogin(user: { email: string; password: string }): Promise<void> {
-    console.log(user);
     this.performLogin('/users/login', {
       userEmail: user.email,
       userPassword: user.password,
     }).subscribe({
       next: async (response) => {
-        console.log(response);
         this.handleUserInfo(response);
         this.updateAuthInfo();
       },
@@ -132,13 +128,11 @@ export class AuthService {
     email: string;
     googleId: string;
   }): Promise<void> {
-    console.log(user);
     this.performLogin('/users/googlelogin', {
       userEmail: user.email,
       googleId: user.googleId,
     }).subscribe({
       next: async (response) => {
-        console.log(response);
         this.handleUserInfo(response);
         this.updateAuthInfo();
       },

@@ -5,18 +5,16 @@ module.exports.getEquipment = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
+
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -31,7 +29,7 @@ module.exports.createEquipment = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
+
     con.query(sql, [name, intIdImage, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
@@ -41,7 +39,6 @@ module.exports.createEquipment = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -57,7 +54,7 @@ module.exports.updateEquipment = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
+
     con.query(
       sql,
       [idEquipment, name, intIdImage, intIdUser],
@@ -70,7 +67,6 @@ module.exports.updateEquipment = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -85,13 +81,11 @@ module.exports.deleteEquipment = function (req, res, next) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
 
     let sql = "CALL excluiEquipamento(?,?)"; // Move the SQL declaration before its usage
 
     con.query(sql, [idEquipment, intIdUser], function (error, result) {
       if (error) {
-        console.log("Gerou este erro: ", error);
         // Consider adding 'res.json(error);' or another way to handle the error
       } else {
         if (Array.isArray(result)) {
@@ -103,7 +97,6 @@ module.exports.deleteEquipment = function (req, res, next) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

@@ -8,18 +8,15 @@ module.exports.getHistories = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idExercicio, idUser], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -33,7 +30,6 @@ module.exports.getHistoriesByMonth = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [idExercicio, idUser, idReportType],
@@ -42,12 +38,10 @@ module.exports.getHistoriesByMonth = function (req, res) {
           res.json(error);
           // throw error;
         }
-        console.log(result);
         res.json(result);
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -55,7 +49,6 @@ module.exports.getHistoriesByMonth = function (req, res) {
   let sql = "call buscaHistoricoMes(?,?,?)";
 };
 module.exports.createHistory = function (req, res) {
-  console.log("History", req.body);
   var charEvent = req.body.event;
   var intValue = req.body.value;
   var intIdExercise = req.body.idExercise;
@@ -64,7 +57,6 @@ module.exports.createHistory = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [charEvent, intValue, intIdExercise, intIdUser],
@@ -77,7 +69,6 @@ module.exports.createHistory = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );

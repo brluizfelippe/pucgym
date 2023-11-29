@@ -5,18 +5,17 @@ module.exports.getExercises = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
+
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
+
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -28,18 +27,17 @@ module.exports.getExercise = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
+
     con.query(sql, [idEquipment], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
+
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -58,7 +56,6 @@ module.exports.createExercise = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [name, intIdMuscle, intIdVideo, intIdEq1, intIdEq2, intIdEq3, intIdUser],
@@ -71,7 +68,6 @@ module.exports.createExercise = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -80,7 +76,6 @@ module.exports.createExercise = function (req, res) {
 };
 
 module.exports.updateExercise = function (req, res) {
-  console.log(req.body);
   var idExercise = req.params.id;
   var name = req.body.exercise.name;
   var intIdMuscle = req.body.exercise.muscle.id;
@@ -93,7 +88,6 @@ module.exports.updateExercise = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [
@@ -115,7 +109,6 @@ module.exports.updateExercise = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -130,7 +123,6 @@ module.exports.deleteExercise = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idExercise, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
@@ -140,7 +132,6 @@ module.exports.deleteExercise = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

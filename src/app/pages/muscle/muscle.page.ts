@@ -120,7 +120,6 @@ export class MusclePage implements OnInit, OnDestroy {
     this.newItem = true;
   }
   onCreate(form: NgForm) {
-    console.log(form);
     this.muscleInfoStore.muscleSelected.name = form.value.newGroup;
     this.muscleService.onMuscleSelected(this.muscleInfoStore.muscleSelected);
     this.muscleService.onCreateMuscle();

@@ -5,7 +5,6 @@ module.exports.getPrograms = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
@@ -15,7 +14,6 @@ module.exports.getPrograms = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -27,7 +25,6 @@ module.exports.getProgram = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idProgram], function (error, result) {
       if (error) {
         res.json(error);
@@ -37,7 +34,6 @@ module.exports.getProgram = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -61,7 +57,6 @@ module.exports.createProgram = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [
@@ -87,7 +82,6 @@ module.exports.createProgram = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -113,7 +107,6 @@ module.exports.updateProgram = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [
@@ -140,7 +133,6 @@ module.exports.updateProgram = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -155,7 +147,6 @@ module.exports.deleteProgram = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idTraining, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
@@ -165,7 +156,6 @@ module.exports.deleteProgram = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

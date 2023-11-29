@@ -5,18 +5,15 @@ module.exports.getVideo = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
         // throw error;
       }
-      console.log(result);
       res.json(result);
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -24,8 +21,6 @@ module.exports.getVideo = function (req, res) {
 };
 
 module.exports.createFile = function (req, res) {
-  console.log("este é o request :" + JSON.stringify(req.file));
-
   var fieldname = req.file.fieldname;
   var originalname = req.file.originalname;
   var encoding = req.file.encoding;
@@ -44,7 +39,6 @@ module.exports.createFile = function (req, res) {
 
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [
@@ -67,12 +61,10 @@ module.exports.createFile = function (req, res) {
           res.json(error);
           // throw error;
         }
-        console.log(results);
         res.json(results);
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -88,11 +80,9 @@ module.exports.deleteVideo = function (req, res, next) {
 
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [videoKey, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
-        console.log("Gerou este erro: ", error);
       }
 
       Array.isArray(result)
@@ -105,7 +95,6 @@ module.exports.deleteVideo = function (req, res, next) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

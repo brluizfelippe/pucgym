@@ -200,7 +200,6 @@ export class EquipmentPage implements OnInit, OnDestroy {
     //this.videoInfoStore.updateVideoSelected(fileChangeEvent.target.files[0]);
     this.file = fileChangeEvent.target.files[0];
     document.getElementById('arquivoSelecionado')!.innerHTML = this.file.name;
-    console.log(this.videoInfoStore);
   }
 
   onSelecionaArquivo() {

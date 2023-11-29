@@ -234,8 +234,6 @@ export class StatsComponent implements OnInit {
   }
 
   export() {
-    console.log('exporting....');
-
     //const data = [{ foo: "foo" }, { bar: "bar" }];
     let auxData: any[] = [];
     this.historyInfoStore.historyMonthsQty.forEach((element) => {

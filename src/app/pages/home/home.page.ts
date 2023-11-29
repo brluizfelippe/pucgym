@@ -320,7 +320,6 @@ export class HomePage implements OnInit {
       text: 'FECHAR',
       role: 'cancel',
       handler: () => {
-        console.log('Dismiss clicked');
         this.resetStates();
       },
     },
@@ -331,7 +330,6 @@ export class HomePage implements OnInit {
     if (role === 'timeout') {
       this.resetStates();
     }
-    console.log(`Dismissed with role: ${role}`);
   }
   //########### Toast #################
 

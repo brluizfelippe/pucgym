@@ -38,13 +38,10 @@ export class RegisterPage implements OnInit {
     try {
       const deviceInfo = await Device.getInfo();
       if ((deviceInfo as unknown as DeviceInfo).platform === 'web') {
-        console.log('running on web!');
         //not necessary for android and ios
         GoogleAuth.initialize();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   ngOnInit() {
@@ -67,11 +64,8 @@ export class RegisterPage implements OnInit {
         this.userInfoStore.userSelected.lastName = googleUser.familyName;
         this.userInfoStore.userSelected.password = 'no-pass';
         this.onSubmit();
-
-        console.log(googleUser, this.userInfoStore);
       })
       .catch(async (error) => {
-        console.log('error on sigin method: ', error);
         const alert = await this.alertCtrl.create({
           header: 'Registro Falhou!',
 

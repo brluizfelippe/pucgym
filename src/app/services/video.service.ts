@@ -53,7 +53,6 @@ export class VideoService {
   }
 
   private formatIntoVideoType(info: any[]) {
-    console.log(info);
     let auxInfo: Video[] = [];
     info.length
       ? info.forEach((element) => {
@@ -156,7 +155,6 @@ export class VideoService {
   async onCreateVideo(file: File) {
     let formData = new FormData();
     formData.append('file', file, file.name);
-    console.log(file);
 
     this.http
       .post(this.link.baseUrl(Capacitor.getPlatform()) + '/videos', formData, {
@@ -164,7 +162,6 @@ export class VideoService {
       })
       .subscribe({
         next: async (response) => {
-          console.log(response);
           Array.isArray(response)
             ? (async () => {
                 let auxVideoSelected = new Video();
@@ -226,7 +223,6 @@ export class VideoService {
       .append('userId', this.authService.authInfo.userId)
       .append('bucket', this.videoInfoStore.videoSelected.bucket)
       .append('videoKey', this.videoInfoStore.videoSelected.key);
-    console.log(options);
     this.http
       .delete(
         this.link.baseUrl(Capacitor.getPlatform()) +

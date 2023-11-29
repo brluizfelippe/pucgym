@@ -5,7 +5,6 @@ module.exports.getSetups = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [], function (error, result) {
       if (error) {
         res.json(error);
@@ -15,7 +14,6 @@ module.exports.getSetups = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -28,7 +26,6 @@ module.exports.getSetup = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idUsuario, idExercicio], function (error, result) {
       if (error) {
         res.json(error);
@@ -38,7 +35,6 @@ module.exports.getSetup = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });
@@ -50,7 +46,6 @@ IN vcharCarga varchar(45),
 IN vcharRepeticao varchar(45),
 IN vcharAjuste varchar(45) */
 module.exports.createSetup = function (req, res) {
-  console.log("create setup :", req.body);
   var intIdUser = req.body.userId;
   var intIdExercise = req.body.setup.exercise.id;
   var vcharLoad = req.body.setup.load;
@@ -60,7 +55,6 @@ module.exports.createSetup = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [intIdUser, intIdExercise, vcharLoad, vcharRep, vcharSet],
@@ -73,7 +67,6 @@ module.exports.createSetup = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -82,7 +75,6 @@ module.exports.createSetup = function (req, res) {
 };
 
 module.exports.updateSetup = function (req, res) {
-  console.log(req.body, req.params);
   var intIdSetup = req.params.id;
   var intIdUser = req.body.setup.user.id;
   var intIdExercise = req.body.setup.exercise.id;
@@ -93,7 +85,6 @@ module.exports.updateSetup = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(
       sql,
       [intIdSetup, intIdUser, intIdExercise, vcharLoad, vcharRep, vcharSet],
@@ -106,7 +97,6 @@ module.exports.updateSetup = function (req, res) {
 
         con.end(function (err) {
           if (err) throw err;
-          console.log("Disconnected!");
         });
       }
     );
@@ -121,7 +111,6 @@ module.exports.deleteSetup = function (req, res) {
   const con = mysql.createConnection(keys);
   con.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
     con.query(sql, [idTraining, intIdUser], function (error, result) {
       if (error) {
         res.json(error);
@@ -131,7 +120,6 @@ module.exports.deleteSetup = function (req, res) {
 
       con.end(function (err) {
         if (err) throw err;
-        console.log("Disconnected!");
       });
     });
   });

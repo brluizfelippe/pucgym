@@ -30,7 +30,6 @@ export class LandingPage implements OnInit {
   }
   async ngOnInit() {
     //Push notifications
-    console.log('Initializing HomePage');
 
     // Request permission to use push notifications
     // iOS will prompt user and return if they granted permission or not
@@ -46,7 +45,6 @@ export class LandingPage implements OnInit {
 
     PushNotifications.addListener('registration', (token: Token) => {
       alert('Push registration success, token: ' + token.value);
-      console.log(token.value);
     });
 
     PushNotifications.addListener('registrationError', (error: any) => {

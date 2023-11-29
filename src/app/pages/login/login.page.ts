@@ -56,19 +56,15 @@ export class LoginPage implements OnInit {
     try {
       const deviceInfo = await Device.getInfo();
       if ((deviceInfo as unknown as DeviceInfo).platform === 'web') {
-        console.log('running on web!');
         //not necessary for android and ios
         GoogleAuth.initialize();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   ngOnInit() {
     this.authSub = this.authService.authInfoListener().subscribe(
       async (authData) => {
-        console.log(authData);
         this.authInfoStore.update(authData);
         if (this.authInfoStore.error) {
           this.showAlert(
@@ -96,7 +92,6 @@ export class LoginPage implements OnInit {
   }
 
   async onSubmit(form: NgForm) {
-    console.log(form);
     let loading = await this.loadingCtrl.create({
       message: 'Verificando credenciais...aguarde um pouco, por favor!',
     });
@@ -110,12 +105,8 @@ export class LoginPage implements OnInit {
 
     this.authService
       .onUserLogin(userData)
-      .then((value) => {
-        console.log(JSON.stringify(value));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((value) => {})
+      .catch((error) => {});
   }
 
   async googleSignIn() {
@@ -123,7 +114,6 @@ export class LoginPage implements OnInit {
     await GoogleAuth.signIn()
       .then(async (data) => {
         googleUser = data;
-        console.log('login successfull :', data);
         let loading = await this.loadingCtrl.create({
           message:
             'Verificando credenciais do google...aguarde um pouco, por favor!',
@@ -139,7 +129,6 @@ export class LoginPage implements OnInit {
         this.authService.onUserLoginWithGoogle(userData);
       })
       .catch(async (error) => {
-        console.log('error on sigin method: ', error);
         this.showAlert('Falha no login', '', error.error);
       });
   }

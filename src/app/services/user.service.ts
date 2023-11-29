@@ -178,8 +178,6 @@ export class UserService {
       )
       .subscribe({
         next: async (response) => {
-          console.log(response);
-
           if (Array.isArray(response)) {
             this.showAlert(
               'Criação de usuário falhou!',

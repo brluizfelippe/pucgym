@@ -347,7 +347,6 @@ export class ExerciseService {
   //###################
 
   formatIntoExerciseType(info: any[]): Exercise[] {
-    console.log(info);
     const auxInfo: Exercise[] = [];
 
     info.forEach((element) => {
