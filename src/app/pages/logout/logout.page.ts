@@ -37,16 +37,23 @@ export class LogoutPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    GoogleAuth.signOut()
-      .then(async (data) => {
-        this.authService.onUserLogout();
-        this.showAlert('Logout', '', 'Usuário desconectado com sucesso');
+    if (this.authService.authInfo.imageUrl !== '') {
+      GoogleAuth.signOut()
+        .then(async (data) => {
+          this.authService.onUserLogout();
+          this.showAlert('Logout', '', 'Usuário desconectado com sucesso');
 
-        this.authService.redirectOnUnauthorized();
-      })
-      .catch(async (error) => {
-        console.log('error on sigin method: ', error);
-        this.showAlert('Falha no logout', '', error.error);
-      });
+          this.authService.redirectOnUnauthorized();
+        })
+        .catch(async (error) => {
+          console.log('error on sigin method: ', error);
+          this.showAlert('Falha no logout', '', error.error);
+        });
+    } else {
+      this.authService.onUserLogout();
+      this.showAlert('Logout', '', 'Usuário desconectado com sucesso');
+
+      this.authService.redirectOnUnauthorized();
+    }
   }
 }
